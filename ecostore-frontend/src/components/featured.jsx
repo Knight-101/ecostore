@@ -39,14 +39,12 @@ export const DisplayDiv = (props) => {
 };
 
 const Featured = (props) => {
-  const { height, width } = useWindowDimensions();
-  console.log(height, width);
+  const { width } = useWindowDimensions();
 
   function getNumSlides(width) {
     let num = Math.floor(width / 400);
     return num > 0 ? num : 1;
   }
-  console.log(getNumSlides(width));
 
   return (
     <>
