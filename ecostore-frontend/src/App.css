@@ -1,0 +1,17 @@
+*{
+    --color-primary: #0d8f8f;
+    --color-secondary: #fafafa;
+    --color-tertiary: #fafafa;
+    /* background */
+    --bg-primary: #111111;
+    --bg-secondary: #fafafa;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background: var(--bg-primary);
+    color: var(--color-primary);
+    font-family: 'Roboto', sans-serif;
+    /*Free Faux Stones SVG provided by SVGeez.com - CC 4.0 License - © 2019 Megan Young */
+}

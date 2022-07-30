@@ -1,11 +1,12 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Marketplace from "./pages/marketplace";
 
 function App() {
   return (
-    <p>
-      Cleanedup React App
-    </p>
+    <div>
+      <Marketplace />
+    </div>
   );
 }
 
