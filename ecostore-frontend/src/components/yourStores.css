@@ -1,0 +1,38 @@
+.ys-main {
+  margin-top: 50px;
+}
+
+.ys-header {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(40px, 8vw, 60px);
+  font-weight: 600;
+}
+
+.ys-main {
+  display: flex;
+  padding: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.add-store-main {
+  background-color: #0d8f8f15;
+  height: 400px;
+  width: 400px;
+  border: 3px dashed var(--color-primary);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.add-store-main > span {
+  font-size: 100px;
+}

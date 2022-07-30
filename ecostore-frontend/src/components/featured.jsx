@@ -8,11 +8,15 @@ import { Autoplay, Pagination, Navigation } from "swiper";
 import useWindowDimensions from "../utils/getWindowDim";
 import store from "../assets/NFT.jpg";
 
-const DisplayDiv = (props) => {
+export const DisplayDiv = (props) => {
   return (
     <div className="featured-store">
       <div className="featured-store-image">
-        <img src={store} alt="" className="featured-img" />
+        <img
+          src={props.image ? props.image : store}
+          alt=""
+          className="featured-img"
+        />
         <div className="store-tags">
           <div className="store-badge">Badge</div>
           <div className="store-badge">Badge</div>
