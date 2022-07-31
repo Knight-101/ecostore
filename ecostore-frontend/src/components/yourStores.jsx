@@ -12,7 +12,7 @@ const AddYourStore = () => {
   );
 };
 
-const YourStores = ({ type, searchParam }) => {
+const YourStores = ({ type, searchParam, customRef }) => {
   return (
     <>
       <div
@@ -21,12 +21,12 @@ const YourStores = ({ type, searchParam }) => {
       >
         {type === "search" ? "Search Results" : "Your Stores"}
       </div>
-      <div className="ys-main">
-        <DisplayDiv image={meta} />
-        <DisplayDiv image={meta} />
-        <DisplayDiv image={meta} />
-        <DisplayDiv image={meta} />
+      <div className="ys-main" ref={customRef}>
         {type !== "search" && <AddYourStore />}
+        <DisplayDiv image={meta} />
+        <DisplayDiv image={meta} />
+        <DisplayDiv image={meta} />
+        <DisplayDiv image={meta} />
       </div>
     </>
   );
