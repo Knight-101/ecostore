@@ -1,0 +1,65 @@
+.nav-main {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px 10px 20px;
+  align-items: center;
+}
+
+.nft-progress-level-text {
+  width: 20px;
+  text-align: center;
+}
+.nft-progress-level {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nft-level-name {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.nft-level-title {
+  font-size: 12px;
+  color: #fefefe;
+}
+
+.nft-actual-level {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.nft-progress-bar {
+  border: 2px solid var(--color-primary);
+  border-radius: 10px;
+  width: 150px;
+  height: 25px;
+  overflow: hidden;
+}
+
+.nav-inner-prog {
+  background-color: var(--color-primary);
+  height: 100%;
+  opacity: 0.5;
+}
+
+.nav-nft-contain {
+  display: flex;
+  gap: 10px;
+}
+
+.nft-prog-description {
+  font-size: 12px;
+  color: #fefefe;
+  text-align: center;
+}
+
+.nft-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 250px;
+}
