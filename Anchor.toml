@@ -1,0 +1,15 @@
+[features]
+seeds = false
+skip-lint = false
+[programs.devnet]
+ecostore_program = "92q7bxpg3E7Ef4UXQdXqq7PyezEAyh4RBR5kEFMfjw7g"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "/root/.config/solana/id.json"
+
+[scripts]
+test = "node tests/ecostore-program.js"
