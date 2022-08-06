@@ -1,7 +1,7 @@
 import React from "react";
 import { DisplayDiv } from "./featured";
-import "./yourStores.css";
-import meta from "../assets/metaverse.jpg";
+// import meta from "../assets/metaverse.jpg";
+const meta = "/assets/metaverse.jpg";
 
 const AddYourStore = () => {
   return (

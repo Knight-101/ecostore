@@ -1,7 +1,6 @@
 import React, { Suspense, useRef } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import "./threeNFT.css";
 
 function ModelSeed(props) {
   const { nodes, materials } = useGLTF("/models/seed.glb");

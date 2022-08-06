@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import "./marketplaceHead.css";
-import search from "../assets/search.svg";
+const search = "/assets/search.svg"
 
 const MarketplaceHead = (props) => {
   const handleChange = (e) => {

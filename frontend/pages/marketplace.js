@@ -14,7 +14,10 @@ const Marketplace = () => {
   const [passedParam, setPassedParam] = useState("");
   const [market, setMarket] = useState(true);
   const scrollRef = useRef(null);
-  polyfill();
+  if (typeof window !== "undefined") {
+    // Client-side-only code
+    polyfill();
+  }
 
   const handleSearch = () => {
     setSearch(false);

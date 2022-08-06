@@ -1,12 +1,12 @@
-import React from "react";
-import "./featured.css";
+import React, { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper";
 import useWindowDimensions from "../utils/getWindowDim";
-import store from "../assets/NFT.jpg";
+// import store from "../assets/NFT.jpg";
+const store = "../assets/NFT.jpg"
 
 export const DisplayDiv = (props) => {
   return (
@@ -39,8 +39,12 @@ export const DisplayDiv = (props) => {
 };
 
 const Featured = (props) => {
-  const { width } = useWindowDimensions();
-
+  var s_w = 1000;
+  if (typeof window !== "undefined") {
+    // Client-side-only code
+    const { width } = useWindowDimensions();
+    s_w = width;
+  }
   function getNumSlides(width) {
     let num = Math.floor(width / 400);
     return num > 0 ? num : 1;
@@ -52,7 +56,7 @@ const Featured = (props) => {
       <div className="feature-main">
         <Swiper
           spaceBetween={0}
-          slidesPerView={getNumSlides(width)}
+          slidesPerView={getNumSlides(s_w)}
           centeredSlides={true}
           autoplay={{
             delay: 2500,
