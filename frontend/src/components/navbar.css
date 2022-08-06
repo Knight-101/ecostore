@@ -1,0 +1,113 @@
+.nav-main {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px 10px 20px;
+  align-items: center;
+}
+
+.nft-progress-level-text {
+  width: 20px;
+  text-align: center;
+}
+.nft-progress-level {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nft-level-name {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.nft-level-title {
+  font-size: 12px;
+  color: #fefefe;
+}
+
+.nft-actual-level {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.nft-progress-bar {
+  border: 2px solid var(--color-primary);
+  border-radius: 10px;
+  width: 150px;
+  height: 25px;
+  overflow: hidden;
+}
+
+.nav-inner-prog {
+  background-color: var(--color-primary);
+  height: 100%;
+  opacity: 0.5;
+}
+
+.nav-nft-contain {
+  display: flex;
+  gap: 10px;
+}
+
+.nft-prog-description {
+  font-size: 12px;
+  color: #fefefe;
+  text-align: center;
+}
+
+.nft-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 250px;
+}
+
+.svg-bag {
+  stroke-dasharray: 997px;
+  stroke-dashoffset: 997px;
+  stroke-width: 2px;
+  fill: #ffffff20;
+  animation: ecostoreBag 5s linear forwards 2s, bagFill 1s linear forwards 6s;
+}
+
+.svg-tag {
+  /* transform: translateX(10px); */
+  transform-origin: 80% 65%;
+  animation: 4s cubic-bezier(0.5, 0, 0.5, 1) infinite ecoStoreTag;
+  animation-play-state: paused;
+}
+
+.nav-body:hover .svg-tag {
+  animation-play-state: running;
+}
+@keyframes ecoStoreTag {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  50% {
+    transform: rotateZ(120deg);
+  }
+  100% {
+    transform: rotateZ(0deg);
+  }
+}
+@keyframes ecostoreBag {
+  0% {
+    stroke-dashoffset: 997px;
+  }
+  100% {
+    stroke-dashoffset: 0px;
+    stroke-width: 0px;
+  }
+}
+
+@keyframes bagFill {
+  0% {
+    fill: #ffffff20;
+  }
+  100% {
+    fill: #7ed957;
+  }
+}
