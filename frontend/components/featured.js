@@ -5,6 +5,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper";
 import useWindowDimensions from "../utils/getWindowDim";
+import dynamic from 'next/dynamic'
 // import store from "../assets/NFT.jpg";
 const store = "../assets/NFT.jpg"
 

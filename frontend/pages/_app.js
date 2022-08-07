@@ -4,6 +4,7 @@ import '../styles/yourStores.css'
 import '../styles/marketplaceHead.css'
 import '../styles/navbar.css'
 import '../styles/threeNFT.css'
+import '../styles/createStore.css'
 
 
 function MyApp({ Component, pageProps }) {

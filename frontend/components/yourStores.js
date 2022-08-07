@@ -1,4 +1,5 @@
 import React from "react";
+import CreateStoreModal from "./createStore";
 import { DisplayDiv } from "./featured";
 // import meta from "../assets/metaverse.jpg";
 const meta = "/assets/metaverse.jpg";
@@ -15,6 +16,7 @@ const AddYourStore = () => {
 const YourStores = ({ type, searchParam, customRef }) => {
   return (
     <>
+          <CreateStoreModal />
       <div
         className={`ys-header ${type === "search" ? "colour-search" : ""}`}
         customattr={searchParam}

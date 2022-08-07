@@ -14,6 +14,10 @@ const Marketplace = () => {
   const [passedParam, setPassedParam] = useState("");
   const [market, setMarket] = useState(true);
   const scrollRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+      setMounted(true)
+  }, [])
   if (typeof window !== "undefined") {
     // Client-side-only code
     polyfill();
@@ -43,7 +47,8 @@ const Marketplace = () => {
         mpvalue={market}
         mpsetter={setMarket}
       />
-      {market ? <Featured /> : <YourStores />}
+      {market ?  ( mounted && <Featured /> )
+ : <YourStores />}
       {isSearch && market && (
         <YourStores
           type={"search"}
