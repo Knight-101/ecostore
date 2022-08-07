@@ -4,8 +4,9 @@ const CreateStoreModal = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [nameCount, setNameCount] = useState(0);
   const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [descriptionCount, setDescriptionCount] = useState(0);
+  const [description, setDescription] = useState("");
+  const [descriptionCount, setDescriptionCount] = useState(0);
+  const [mpvalue, mpsetter] = useState(true);
   const nameWordLim = 25;
   const descriptionWordLim = 100;
 
@@ -23,7 +24,13 @@ const CreateStoreModal = () => {
     }
     setDescription(e.target.value);
     setDescriptionCount(e.target.value.length);
-  }
+  };
+
+  const handleSubmit = () => {
+    console.log("submit");
+    console.log(name);
+    console.log(description);
+  };
 
   return (
     <div className="create-store-modal-wrap">
@@ -54,8 +61,34 @@ const CreateStoreModal = () => {
               {descriptionCount}&nbsp;/&nbsp;{descriptionWordLim}
             </div>
           </div>
+          <div className="input-wrap tac">
+            Offset Your Emissions?
+            <br />
+            <div className="sd-switch">
+              <div className="switch-wrap">
+                <div
+                  className="switch-select"
+                  onClick={() => mpsetter(true)}
+                >
+                  Yes
+                </div>
+                <div
+                  className="switch-select"
+                  onClick={() => mpsetter(false)}
+                >
+                  No
+                </div>
+                <div
+                  className="switch-currently-on"
+                  style={{ left: mpvalue ? 0 : 150 }}
+                ></div>
+              </div>
+            </div>
+          </div>
           <div className="input-wrap">
-            <button className="create-store-button">Create Store</button>
+            <button className="create-store-button" onClick={handleSubmit}>
+              Create Store
+            </button>
           </div>
         </div>
       </div>

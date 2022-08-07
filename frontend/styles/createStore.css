@@ -7,7 +7,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99;
+  z-index: 1;
   background-color: #11111180;
   backdrop-filter: blur(10px);
 }
@@ -76,4 +76,13 @@
   color: var(--color-primary);
   background-color: #111111;
   cursor: pointer;
+}
+
+.tac {
+  text-align: center;
+  font-family: "Jost", sans-serif;
+}
+
+.tac > p {
+  padding-bottom: 20px;
 }
