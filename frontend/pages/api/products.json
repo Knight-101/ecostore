@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "Sad Boy",
+    "price": "0.01",
+    "sellerAddress": "3hHz1XBsthyhKb5zvfAoCyUEizGrx6boTzqSGmGvhb1D",
+    "description": "Get this sad boy to remind you you are hopeless",
+    "image_url": "https://gateway.ipfscdn.io/ipfs/Qme4wkaY5pJrXJzaeBE4Hb2komYbWkbkuy1PNwipk9KDcc",
+    "filename": "sad-boy.jpg",
+    "hash": "Qme4wkaY5pJrXJzaeBE4Hb2komYbWkbkuy1PNwipk9KDcc"
+  }
+]

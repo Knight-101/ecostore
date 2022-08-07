@@ -6,7 +6,7 @@ import ThreeNFT from "../components/threeNFT.js";
 function App() {
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       {/* <ThreeNFT /> */}
       {/* <Marketplace /> */}
     </div>

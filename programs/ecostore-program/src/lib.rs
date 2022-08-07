@@ -7,7 +7,7 @@ use {
     mpl_token_metadata::{instruction as token_instruction, ID as TOKEN_METADATA_ID},
 };
 
-declare_id!("92q7bxpg3E7Ef4UXQdXqq7PyezEAyh4RBR5kEFMfjw7g");
+declare_id!("Gj8aZFEWp7TwXjBaMrRxEMEgCMN9yStmnpksjBExuwr8");
 
 #[program]
 pub mod ecostore_program {
