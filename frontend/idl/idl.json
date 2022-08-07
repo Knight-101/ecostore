@@ -1,0 +1,140 @@
+{
+  "version": "0.1.0",
+  "name": "ecostore_program",
+  "instructions": [
+    {
+      "name": "mint",
+      "accounts": [
+        {
+          "name": "nftData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "masterEdition",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintAuthority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "metadataTitle",
+          "type": "string"
+        },
+        {
+          "name": "metadataSymbol",
+          "type": "string"
+        },
+        {
+          "name": "metadataUri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "donate",
+      "accounts": [
+        {
+          "name": "nftData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sender",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "senderTokens",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "recipientTokens",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ],
+      "returns": {
+        "defined": "NftData"
+      }
+    }
+  ],
+  "accounts": [
+    {
+      "name": "NftData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mintAddress",
+            "type": "publicKey"
+          },
+          {
+            "name": "donated",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "Gj8aZFEWp7TwXjBaMrRxEMEgCMN9yStmnpksjBExuwr8"
+  }
+}

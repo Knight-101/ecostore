@@ -30,6 +30,7 @@ const CreateStoreModal = () => {
     console.log("submit");
     console.log(name);
     console.log(description);
+    console.log(mpvalue);
   };
 
   return (

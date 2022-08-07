@@ -2,7 +2,7 @@
 seeds = false
 skip-lint = false
 [programs.devnet]
-ecostore_program = "92q7bxpg3E7Ef4UXQdXqq7PyezEAyh4RBR5kEFMfjw7g"
+ecostore_program = "Gj8aZFEWp7TwXjBaMrRxEMEgCMN9yStmnpksjBExuwr8"
 
 [registry]
 url = "https://api.apr.dev"

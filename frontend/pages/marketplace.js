@@ -6,6 +6,7 @@ import MarketplaceHead from "../components/marketplaceHead";
 import YourStores from "../components/yourStores";
 import { polyfill } from "seamless-scroll-polyfill";
 import { useEffect } from "react";
+import Navbar from "../components/navbar";
 
 const Marketplace = () => {
   const [searchParam, setSearchParam] = useState("");
