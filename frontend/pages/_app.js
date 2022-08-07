@@ -7,12 +7,14 @@ import "../styles/navbar.css";
 import "../styles/threeNFT.css";
 import "../styles/createStore.css";
 import Navbar from "../components/navbar";
+import CreateProduct from "../components/CreateProduct";
 
 function MyApp({ Component, pageProps }) {
   return (
     <Web3Provider>
       <Navbar />
       <Component {...pageProps} />
+      <CreateProduct />
     </Web3Provider>
   );
 }
