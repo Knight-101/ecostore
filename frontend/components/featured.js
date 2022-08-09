@@ -5,9 +5,9 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper";
 import useWindowDimensions from "../utils/getWindowDim";
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
 // import store from "../assets/NFT.jpg";
-const store = "../assets/NFT.jpg"
+const store = "../assets/NFT.jpg";
 
 export const DisplayDiv = (props) => {
   return (
@@ -25,15 +25,9 @@ export const DisplayDiv = (props) => {
         </div>
       </div>
       <div className="featured-store-data">
-        <div className="featured-store-name">Name of Store</div>
-        <div className="store-merchant">By store owner</div>
-        <div className="store-description">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quisquam ut
-          minima quidem ipsam dolores aut culpa sequi voluptatem beatae. Tenetur
-          vero soluta facilis unde ducimus beatae deleniti fugit cum
-          consequuntur recusandae praesentium inventore voluptatibus
-          reprehenderit, eveniet id fugiat, aspernatur assumenda.
-        </div>
+        <div className="featured-store-name">{props.name}</div>
+        {/* <div className="store-merchant">By store owner</div> */}
+        <div className="store-description">{props.description}</div>
       </div>
     </div>
   );
@@ -71,24 +65,15 @@ const Featured = (props) => {
           modules={[Autoplay, Pagination, Navigation]}
           className="mySwiper"
         >
-          <SwiperSlide>
-            <DisplayDiv />
-          </SwiperSlide>
-          <SwiperSlide>
-            <DisplayDiv />
-          </SwiperSlide>
-          <SwiperSlide>
-            <DisplayDiv />
-          </SwiperSlide>
-          <SwiperSlide>
-            <DisplayDiv />
-          </SwiperSlide>
-          <SwiperSlide>
-            <DisplayDiv />
-          </SwiperSlide>
-          <SwiperSlide>
-            <DisplayDiv />
-          </SwiperSlide>
+          {props.stores?.map((store, index) => (
+            <SwiperSlide key={index}>
+              <DisplayDiv
+                image={store.image}
+                name={store.name}
+                description={store.description}
+              />
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
     </>

@@ -8,10 +8,13 @@ import "../styles/threeNFT.css";
 import "../styles/createStore.css";
 import Navbar from "../components/navbar";
 import CreateProduct from "../components/CreateProduct";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function MyApp({ Component, pageProps }) {
   return (
     <Web3Provider>
+      <ToastContainer />
       <Navbar />
       <Component {...pageProps} />
       <CreateProduct />

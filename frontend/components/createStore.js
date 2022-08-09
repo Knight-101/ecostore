@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import Web3Context from "../contexts/Web3Context";
 
-const CreateStoreModal = () => {
-  const [isOpen, setIsOpen] = useState(true);
+const CreateStoreModal = ({ setIsOpen }) => {
+  const { createStore } = useContext(Web3Context);
   const [nameCount, setNameCount] = useState(0);
   const [name, setName] = useState("");
+  const [img, setImg] = useState("");
   const [description, setDescription] = useState("");
   const [descriptionCount, setDescriptionCount] = useState(0);
   const [mpvalue, mpsetter] = useState(true);
@@ -17,6 +19,9 @@ const CreateStoreModal = () => {
     setName(e.target.value);
     setNameCount(e.target.value.length);
   };
+  const handleImgChange = (e) => {
+    setImg(e.target.value);
+  };
 
   const handleDescriptionChange = (e) => {
     if (e.target.value.length > descriptionWordLim) {
@@ -26,17 +31,17 @@ const CreateStoreModal = () => {
     setDescriptionCount(e.target.value.length);
   };
 
-  const handleSubmit = () => {
-    console.log("submit");
-    console.log(name);
-    console.log(description);
-    console.log(mpvalue);
+  const handleSubmit = async () => {
+    await createStore(name, description, img);
   };
 
   return (
     <div className="create-store-modal-wrap">
       <div className="create-store-modal">
         <div className="create-store-modal-header">Create Store</div>
+        <button type="button" onClick={() => setIsOpen(false)}>
+          Close
+        </button>
         <div className="create-store-modal-body">
           <div className="input-wrap">
             <input
@@ -49,6 +54,15 @@ const CreateStoreModal = () => {
             <div>
               {nameCount}&nbsp;/&nbsp;{nameWordLim}
             </div>
+          </div>
+          <div className="input-wrap">
+            <input
+              type="text"
+              value={img}
+              placeholder="Store Image Link"
+              className="create-input"
+              onChange={(e) => handleImgChange(e)}
+            />
           </div>
           <div className="input-wrap">
             <textarea
@@ -67,16 +81,10 @@ const CreateStoreModal = () => {
             <br />
             <div className="sd-switch">
               <div className="switch-wrap">
-                <div
-                  className="switch-select"
-                  onClick={() => mpsetter(true)}
-                >
+                <div className="switch-select" onClick={() => mpsetter(true)}>
                   Yes
                 </div>
-                <div
-                  className="switch-select"
-                  onClick={() => mpsetter(false)}
-                >
+                <div className="switch-select" onClick={() => mpsetter(false)}>
                   No
                 </div>
                 <div

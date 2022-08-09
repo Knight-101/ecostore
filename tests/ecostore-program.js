@@ -4,7 +4,6 @@ const { SystemProgram } = anchor.web3;
 const {
   createTransferCheckedInstruction,
   getAssociatedTokenAddress,
-  createAssociatedTokenAccount,
   getMint,
   TOKEN_PROGRAM_ID,
 } = require("@solana/spl-token");
@@ -69,7 +68,7 @@ const main = async () => {
     program.programId
   );
 
-  // Transact with the "mint" function in our on-chain program
+  // // Transact with the "mint" function in our on-chain program
 
   // await program.methods
   //   .mint(testNftTitle, testNftSymbol, testNftUri)
@@ -87,7 +86,7 @@ const main = async () => {
   // console.log("Minted");
   // const nftAccount = await program.account.nftData.fetch(nftData);
   const usdcAddress = new PublicKey(
-    "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr"
+    "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
   );
   const receiverPublicKey = new PublicKey(
     "6WzFCFukTTbwVZnRpkRGtX1GWbpCfc9AVQVeSkgVG8cz"
@@ -97,34 +96,29 @@ const main = async () => {
     usdcAddress,
     senderPublicKey
   );
-  await createAssociatedTokenAccount(
-    provider.connection,
-    wallet.publicKey,
-    usdcAddress,
-    receiverPublicKey
-  );
+
   const recipientUsdcAddress = await getAssociatedTokenAddress(
     usdcAddress,
     receiverPublicKey
   );
-  console.log(recipientUsdcAddress);
-  const price = 10;
-  // This is new, we're getting the mint address of the token we want to transfer
-  // const usdcMint = await getMint(provider.connection, usdcAddress);
 
-  // const tx = await program.rpc.donate(
-  //   new anchor.BN(price * 10 ** usdcMint.decimals),
-  //   {
-  //     accounts: {
-  //       nftData,
-  //       sender: wallet.publicKey,
-  //       senderTokens: senderUsdcAddress,
-  //       recipientTokens: recipientUsdcAddress,
-  //       tokenProgram: TOKEN_PROGRAM_ID,
-  //     },
-  //   }
-  // );
-  // console.log(tx);
+  const price = 0.01;
+  // This is new, we're getting the mint address of the token we want to transfer
+  const usdcMint = await getMint(provider.connection, usdcAddress);
+
+  const tx = await program.rpc.donate(
+    new anchor.BN(price * 10 ** usdcMint.decimals),
+    {
+      accounts: {
+        nftData,
+        sender: wallet.publicKey,
+        senderTokens: senderUsdcAddress,
+        recipientTokens: recipientUsdcAddress,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+    }
+  );
+  console.log(tx);
   const nftAccount = await program.account.nftData.fetch(nftData);
   console.log(nftAccount.donated.toNumber());
 };

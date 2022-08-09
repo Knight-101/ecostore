@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState, useMemo } from "react";
+import { createClient } from "@supabase/supabase-js";
 import {
   Connection,
   PublicKey,
@@ -10,10 +11,16 @@ import {
   getAssociatedTokenAddress,
   getMint,
 } from "@solana/spl-token";
+import { toast } from "react-toastify";
 import { Program, AnchorProvider, web3 } from "@project-serum/anchor";
 import BigNumber from "bignumber.js";
 import products from "../pages/api/products.json";
 import idl from "../idl/idl.json";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_KEY
+);
 // import { toast } from "react-toastify";
 
 // SystemProgram is a reference to the Solana runtime!
@@ -67,15 +74,69 @@ export const Web3Provider = (props) => {
       console.error(error);
     }
   };
-
   functionsToExport.connectWallet = async () => {
     const { solana } = window;
 
     if (solana) {
       const response = await solana.connect();
       console.log("Connected with Public Key:", response.publicKey.toString());
+
       setWalletAddress(response.publicKey.toString());
+      toast.success("Wallet Connected!");
+    } else {
+      toast.info("No wallet found. Get a phantom wallet!");
     }
+  };
+  functionsToExport.fetchAllStores = async () => {
+    let { data, error } = await supabase
+      .from("stores")
+      .select("name, description, image")
+      .order("id", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    console.log(data);
+    return data;
+  };
+  functionsToExport.fetchMyStores = async () => {
+    let { data, error } = await supabase
+      .from("stores")
+      .select("name, description, image")
+      .eq("owner", walletAddress)
+      .order("id", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    console.log(data);
+    return data;
+  };
+
+  functionsToExport.createStore = async (name, description, image) => {
+    if (!walletAddress) {
+      toast.error("Wallet not connected!");
+      return;
+    }
+    let { data, error } = await supabase.from("stores").insert([
+      {
+        name: name,
+        description: description,
+        image: image,
+        owner: walletAddress,
+      },
+    ]);
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    toast.success("Store Created");
+    return data;
   };
 
   functionsToExport.buyProduct = async (order) => {
@@ -148,13 +209,9 @@ export const Web3Provider = (props) => {
     }
   };
 
-  useEffect(() => {
-    const onLoad = async () => {
-      await checkIfWalletIsConnected();
-    };
-    window.addEventListener("load", onLoad);
-    return () => window.removeEventListener("load", onLoad);
-  }, []);
+  // useEffect(() => {
+  //   walletAddress && console.log(functionsToExport.fetchMyStores());
+  // }, [walletAddress]);
 
   return (
     <Web3Context.Provider

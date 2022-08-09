@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import Web3Context from "../contexts/Web3Context";
 import ThreeNFT from "./threeNFT";
 // import logo from "../assets/ecostore_2.svg";
 
@@ -159,16 +160,26 @@ const NFTProgress = ({ level, money }) => {
   );
 };
 const Navbar = () => {
+  const { walletAddress, connectWallet } = useContext(Web3Context);
+  console.log(walletAddress);
   return (
     <div className="nav-main">
       <div className="nav-body">
         {/* <img src={logo} alt="" /> */}
         <SvgAnimation />
       </div>
-      <div className="nav-nft-contain">
-        <NFTProgress level={"seed"} money={7} />
-        <ThreeNFT type={"seed"} />
-      </div>
+      {!walletAddress ? (
+        <div className="nav-nft-contain">
+          <button type="button" onClick={() => connectWallet()}>
+            Connect Wallet
+          </button>
+        </div>
+      ) : (
+        <div className="nav-nft-contain">
+          <NFTProgress level={"seed"} money={7} />
+          <ThreeNFT type={"seed"} />
+        </div>
+      )}
     </div>
   );
 };

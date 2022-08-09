@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useRef } from "react";
 import { useState } from "react";
 import Featured from "../components/featured";
@@ -7,9 +7,12 @@ import YourStores from "../components/yourStores";
 import { polyfill } from "seamless-scroll-polyfill";
 import { useEffect } from "react";
 import Navbar from "../components/navbar";
+import Web3Context from "../contexts/Web3Context";
 
 const Marketplace = () => {
+  const { fetchAllStores } = useContext(Web3Context);
   const [searchParam, setSearchParam] = useState("");
+  const [stores, setStores] = useState(null);
   const [isSearch, setSearch] = useState(false);
   const [searchData, setSearchData] = useState([]);
   const [passedParam, setPassedParam] = useState("");
@@ -17,8 +20,8 @@ const Marketplace = () => {
   const scrollRef = useRef(null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-      setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
   if (typeof window !== "undefined") {
     // Client-side-only code
     polyfill();
@@ -34,10 +37,17 @@ const Marketplace = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   useEffect(() => {
+    const fetchStores = async () => {
+      const stores = await fetchAllStores();
+      stores && setStores([...stores]);
+    };
+    fetchStores();
+  }, [isSearch]);
+  useEffect(() => {
     if (isSearch) {
       scrollRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [isSearch]);
+  }, []);
 
   return (
     <div>
@@ -48,8 +58,7 @@ const Marketplace = () => {
         mpvalue={market}
         mpsetter={setMarket}
       />
-      {market ?  ( mounted && <Featured /> )
- : <YourStores />}
+      {market ? mounted && <Featured stores={stores} /> : <YourStores />}
       {isSearch && market && (
         <YourStores
           type={"search"}
