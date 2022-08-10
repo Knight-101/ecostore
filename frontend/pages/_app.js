@@ -6,6 +6,7 @@ import "../styles/marketplaceHead.css";
 import "../styles/navbar.css";
 import "../styles/threeNFT.css";
 import "../styles/createStore.css";
+import "../styles/productStyles.css"
 import Navbar from "../components/navbar";
 import CreateProduct from "../components/CreateProduct";
 import { ToastContainer, toast } from "react-toastify";
@@ -17,7 +18,7 @@ function MyApp({ Component, pageProps }) {
       <ToastContainer />
       <Navbar />
       <Component {...pageProps} />
-      <CreateProduct />
+      {/* <CreateProduct /> */}
     </Web3Provider>
   );
 }

@@ -1,0 +1,24 @@
+.product-main {
+  border: 2px solid red;
+  width: 250px;
+}
+
+.product-main-img {
+  height: 250px;
+  border: 2px solid green;
+}
+
+.store-container {
+  border: 2px solid blue;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  /* flex-wrap: wrap; */
+}
+
+.product-container {
+  display: flex;
+  border: 1px solid pink;
+  justify-content: center;
+}
