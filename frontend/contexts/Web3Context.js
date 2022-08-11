@@ -1,10 +1,12 @@
 import { createContext, useEffect, useState, useMemo } from "react";
+import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
 import {
   Connection,
   PublicKey,
   clusterApiUrl,
   Transaction,
+  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import {
   createTransferCheckedInstruction,
@@ -33,25 +35,43 @@ const opts = {
 
 const Web3Context = createContext();
 
-const network = clusterApiUrl("devnet");
-
 const usdcAddress = new PublicKey(
   "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr"
 );
 
 export const Web3Provider = (props) => {
   const [walletAddress, setWalletAddress] = useState(null);
+
   const functionsToExport = {};
 
   const getProvider = () => {
-    const connection = new Connection(network, opts.preflightCommitment);
+    const connection = new Connection(
+      clusterApiUrl("devnet"),
+      opts.preflightCommitment
+    );
     const provider = new AnchorProvider(
       connection,
       window.solana,
       opts.preflightCommitment
     );
+
     return provider;
   };
+
+  const getUsdcBalance = async (address) => {
+    const userPublicKey = new PublicKey(walletAddress);
+    const userUsdcAddress = await getAssociatedTokenAddress(
+      usdcAddress,
+      userPublicKey
+    );
+    const connection = new Connection(
+      clusterApiUrl("devnet"),
+      opts.preflightCommitment
+    );
+    const balance = await connection.getTokenAccountBalance(userUsdcAddress);
+    return balance;
+  };
+  walletAddress && getUsdcBalance();
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -139,39 +159,135 @@ export const Web3Provider = (props) => {
     return data;
   };
 
+  functionsToExport.fetchProducts = async (id) => {
+    try {
+      let { data, error } = await supabase
+        .from("products")
+        .select("id,name, price, image_url, filename, hash")
+        .eq("store_id", id);
+
+      if (error) {
+        toast.error(error);
+        console.error(error);
+        return;
+      }
+
+      return data;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+  functionsToExport.addProduct = async (product, storeId) => {
+    try {
+      const { name, price, image_url, filename, hash } = product;
+      let { data, error } = await supabase.from("products").insert([
+        {
+          store_id: storeId,
+          name: name,
+          price: price,
+          image_url: image_url,
+          filename: filename,
+          hash: hash,
+        },
+      ]);
+      if (error) {
+        toast.error(error);
+        console.error(error);
+        return;
+      }
+
+      toast.success("New Product Added");
+      return data;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+
+  functionsToExport.uploadToIpfs = async (file) => {
+    try {
+      var data = new FormData();
+      data.append("file", file);
+      data.append("pinataOptions", '{"cidVersion": 1}');
+      data.append(
+        "pinataMetadata",
+        '{"name": "Product", "keyvalues": {"company": "Pinata"}}'
+      );
+
+      var config = {
+        method: "post",
+        url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_JWT_KEY}`,
+        },
+        data: data,
+      };
+
+      const res = await axios(config);
+      return res.data.IpfsHash;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+
   functionsToExport.buyProduct = async (order) => {
     try {
-      const { buyer, orderID, itemID } = order;
-      if (!buyer) {
-        console.log("Missing buyer address");
+      const { orderID, storeID, price, itemId } = order;
+      if (!walletAddress) {
+        toast.error("Wallet not connected");
       }
 
       if (!orderID) {
         console.log("Missing order ID");
       }
 
-      const product = products.find((item) => item.id === itemID).price;
-      const itemPrice = product.price;
-
-      if (!itemPrice) {
+      if (!price) {
         console.log("Item not found.");
       }
 
-      const bigAmount = BigNumber(itemPrice);
-      const sellerPublicKey = new PublicKey(product.sellerAddress);
+      let { data, error } = await supabase
+        .from("stores")
+        .select("owner")
+        .eq("id", parseInt(storeID));
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      const buyerTokenBalance = await getUsdcBalance();
+
+      if (
+        parseFloat(buyerTokenBalance.value.amount) <
+        parseFloat(price) * 10 ** buyerTokenBalance.value.decimals
+      ) {
+        toast.error("Insufficient token balance!!");
+        return;
+      }
+
+      const sellerAddress = data[0].owner;
+
+      const bigAmount = BigNumber(price);
+
+      const sellerPublicKey = new PublicKey(sellerAddress);
       const buyerPublicKey = new PublicKey(walletAddress);
 
-      const endpoint = clusterApiUrl(network);
+      const endpoint = clusterApiUrl("devnet");
       const connection = new Connection(endpoint);
 
       const buyerUsdcAddress = await getAssociatedTokenAddress(
         usdcAddress,
         buyerPublicKey
       );
+
       const shopUsdcAddress = await getAssociatedTokenAddress(
         usdcAddress,
         sellerPublicKey
       );
+
       const { blockhash } = await connection.getLatestBlockhash("finalized");
 
       // This is new, we're getting the mint address of the token we want to transfer
@@ -200,11 +316,50 @@ export const Web3Provider = (props) => {
       });
 
       tx.add(transferInstruction);
+      const provider = getProvider();
 
-      const txHash = sendAndConfirmTransaction(connection, tx);
+      const txHash = await provider.sendAndConfirm(tx);
+
+      await supabase.from("orders").insert([
+        {
+          store_id: storeID,
+          buyer: walletAddress,
+          order_id: orderID,
+          item_id: itemId,
+          amount: price,
+          txn_hash: txHash,
+        },
+      ]);
+      if (error) {
+        toast.error(error);
+        console.error(error);
+        return;
+      }
+
+      toast.success("Product Bought");
 
       return txHash;
     } catch (err) {
+      console.error(err);
+    }
+  };
+  functionsToExport.hasPurchased = async (itemId) => {
+    try {
+      let { data, error } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("item_id", itemId)
+        .eq("buyer", walletAddress);
+
+      if (error) {
+        toast.error(error);
+        console.error(error);
+        return;
+      }
+
+      return data.length ? true : false;
+    } catch (err) {
+      toast.error(err);
       console.error(err);
     }
   };

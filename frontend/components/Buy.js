@@ -3,7 +3,8 @@ import { Keypair, Connection } from "@solana/web3.js";
 import { findReference, FindReferenceError } from "@solana/pay";
 import IPFSDownload from "./IpfsDownload";
 import Web3Context from "../contexts/Web3Context";
-import { addOrder, hasPurchased, fetchItem } from "../lib/api";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 const STATUS = {
   Initial: "Initial",
@@ -11,21 +12,25 @@ const STATUS = {
   Paid: "Paid",
 };
 
-export default function Buy({ itemID }) {
-  const { walletAddress, buyProduct } = useContext(Web3Context);
+export default function Buy({ itemID, price, filename, hash }) {
+  const router = useRouter();
+  const { id } = router.query;
+  const { walletAddress, buyProduct, hasPurchased } = useContext(Web3Context);
   const orderID = useMemo(() => Keypair.generate().publicKey, []); // Public key used to identify the order
-
-  const [item, setItem] = useState(null); // IPFS hash & filename of the purchased item
   const [loading, setLoading] = useState(false); // Loading state of all above
   const [status, setStatus] = useState(STATUS.Initial); // Tracking transaction status
 
-  const order = useMemo(
-    () => ({
-      orderID: orderID.toString(),
-      itemID: itemID,
-    }),
-    [orderID, itemID]
-  );
+  const order =
+    id &&
+    useMemo(
+      () => ({
+        orderID: orderID.toString(),
+        storeID: id,
+        price: price,
+        itemId: itemID,
+      }),
+      [orderID, id, itemID]
+    );
 
   // Fetch the transaction object from the server (done to avoid tampering)
   const processTransaction = async () => {
@@ -46,15 +51,12 @@ export default function Buy({ itemID }) {
 
   useEffect(() => {
     async function checkPurchased() {
-      const purchased = await hasPurchased(walletAddress, itemID);
-      if (purchased) {
-        setStatus(STATUS.Paid);
-        const item = await fetchItem(itemID);
-        setItem(item);
-      }
+      const purchased = await hasPurchased(itemID);
+      purchased && setStatus(STATUS.Paid);
     }
+
     checkPurchased();
-  }, [walletAddress, itemID]);
+  }, [itemID, walletAddress]);
 
   useEffect(() => {
     // Check if transaction was confirmed
@@ -71,9 +73,8 @@ export default function Buy({ itemID }) {
           ) {
             clearInterval(interval);
             setStatus(STATUS.Paid);
-            addOrder(order);
             setLoading(false);
-            alert("Thank you for your purchase!");
+            toast.success("Thankyou for your purchase");
           }
         } catch (e) {
           if (e instanceof FindReferenceError) {
@@ -87,15 +88,6 @@ export default function Buy({ itemID }) {
       return () => {
         clearInterval(interval);
       };
-    }
-
-    async function getItem(itemID) {
-      const item = await fetchItem(itemID);
-      setItem(item);
-    }
-
-    if (status === STATUS.Paid) {
-      getItem(itemID);
     }
   }, [status]);
 
@@ -114,7 +106,7 @@ export default function Buy({ itemID }) {
   return (
     <div>
       {status === STATUS.Paid ? (
-        <IPFSDownload filename={item.filename} hash={item.hash} />
+        <IPFSDownload filename={filename} hash={hash} />
       ) : (
         <button
           disabled={loading}

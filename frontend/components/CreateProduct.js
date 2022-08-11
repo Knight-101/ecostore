@@ -1,50 +1,39 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { create } from "ipfs-http-client";
 import styles from "../styles/CreateProduct.module.css";
+import Web3Context from "../contexts/Web3Context";
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
-const CreateProduct = () => {
+const CreateProduct = ({ storeId }) => {
+  const { addProduct, uploadToIpfs } = useContext(Web3Context);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
     image_url: "",
-    description: "",
   });
   const [file, setFile] = useState({});
-  const [uploading, setUploading] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
 
   async function onChange(e) {
-    setUploading(true);
     const files = e.target.files;
     try {
-      console.log(files[0]);
-      const added = await client.add(files[0]);
-      setFile({ filename: files[0].name, hash: added.path });
+      const hash = await uploadToIpfs(files[0]);
+      if (hash) {
+        setFile({ filename: files[0].name, hash: hash });
+        setUploaded(true);
+      }
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
-    setUploading(false);
   }
 
   const createProduct = async () => {
     try {
       // Combine product data and file.name
       const product = { ...newProduct, ...file };
-      console.log("Sending product to api", product);
-      const response = await fetch("../api/addProduct", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(product),
-      });
-      const data = await response.json();
-      if (response.status === 200) {
-        alert("Product added!");
-      } else {
-        alert("Unable to add product: ", data.error);
-      }
+      const data = await addProduct(product, storeId);
+      data && console.log("Product added");
     } catch (error) {
       console.log(error);
     }
@@ -79,7 +68,7 @@ const CreateProduct = () => {
               <input
                 className={styles.input}
                 type="text"
-                placeholder="0.01 USDC"
+                placeholder="Price"
                 onChange={(e) => {
                   setNewProduct({ ...newProduct, price: e.target.value });
                 }}
@@ -96,20 +85,13 @@ const CreateProduct = () => {
                 }}
               />
             </div>
-            <textarea
-              className={styles.text_area}
-              placeholder="Description here..."
-              onChange={(e) => {
-                setNewProduct({ ...newProduct, description: e.target.value });
-              }}
-            />
 
             <button
               className={styles.button}
               onClick={() => {
                 createProduct();
               }}
-              disabled={uploading}
+              disabled={!uploaded}
             >
               Create Product
             </button>
