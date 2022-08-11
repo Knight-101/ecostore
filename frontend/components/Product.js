@@ -1,11 +1,11 @@
 import React from "react";
 import Buy from "./Buy";
 
-export default function Product({ product }) {
+export default function Product({ product, itemKey }) {
   const { id, name, price, image_url, filename, hash } = product;
 
   return (
-    <div className="product-container">
+    <div className="product-container" key={itemKey}>
       <div className="product-main">
         <div className="product-main-img">
           <img style={{ height: "200px" }} src={image_url} alt={name} />
@@ -19,7 +19,7 @@ export default function Product({ product }) {
           <div className="product-main-buy">
             <div>{price} USDC</div>
             {/* Replace the IPFS component with the Buy component! */}
-            <Buy itemID={id} price={price} filename={filename} hash={hash} />
+            {/* <Buy itemID={id} price={price} filename={filename} hash={hash} /> */}
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import Web3Context from "../contexts/Web3Context";
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
-const CreateProduct = ({ storeId }) => {
+const CreateProduct = ({ storeId, close }) => {
   const { addProduct, uploadToIpfs } = useContext(Web3Context);
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -17,10 +17,12 @@ const CreateProduct = ({ storeId }) => {
 
   async function onChange(e) {
     const files = e.target.files;
+    console.log(files);
     try {
-      const hash = await uploadToIpfs(files[0]);
-      if (hash) {
-        setFile({ filename: files[0].name, hash: hash });
+      // const hash = await uploadToIpfs(files[0]);
+      if (true) {
+        console.log("uploaded");
+        setFile({ filename: files[0].name, hash:  typeof hash !== "undefined" ? hash : "hash"  });
         setUploaded(true);
       }
     } catch (error) {
@@ -39,9 +41,18 @@ const CreateProduct = ({ storeId }) => {
     }
   };
 
+  function openFileDialog() {
+    document.getElementById("getFile").click();
+  }
+
   return (
     <div className={styles.background_blur}>
       <div className={styles.create_product_container}>
+        <div className={styles.create_product_cross}>
+          <button onClick={() => close(false)} className={styles.close}>
+          &#x2715;
+          </button>
+        </div>
         <div className={styles.create_product_form}>
           <header className={styles.header}>
             <h1>Create Product</h1>
@@ -50,32 +61,30 @@ const CreateProduct = ({ storeId }) => {
           <div className={styles.form_container}>
             <input
               type="file"
-              className={styles.input}
-              accept=".zip,.rar,.7zip,.jpg"
+              accept=".zip,.rar,.7zip,.jpg,.png,.jpeg,.gif,.bmp,.svg,.webp"
               placeholder="Emojis"
               onChange={onChange}
+              className = {styles.getFile} id="getFile"
             />
-            {file.name != null && <p className="file-name">{file.filename}</p>}
-            <div className={styles.flex_row}>
-              <input
-                className={styles.input}
-                type="text"
-                placeholder="Product Name"
-                onChange={(e) => {
-                  setNewProduct({ ...newProduct, name: e.target.value });
-                }}
-              />
-              <input
-                className={styles.input}
-                type="text"
-                placeholder="Price"
-                onChange={(e) => {
-                  setNewProduct({ ...newProduct, price: e.target.value });
-                }}
-              />
-            </div>
+            <button onClick={openFileDialog} className={styles.file_btn}>Add a File</button>
+            {file.filename != null && <div className={styles.file_name}>{file.filename}</div>}
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="Product Name"
+              onChange={(e) => {
+                setNewProduct({ ...newProduct, name: e.target.value });
+              }}
+            />
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="Price"
+              onChange={(e) => {
+                setNewProduct({ ...newProduct, price: e.target.value });
+              }}
+            />
 
-            <div className={styles.flex_row}>
               <input
                 className={styles.input}
                 type="url"
@@ -84,7 +93,6 @@ const CreateProduct = ({ storeId }) => {
                   setNewProduct({ ...newProduct, image_url: e.target.value });
                 }}
               />
-            </div>
 
             <button
               className={styles.button}

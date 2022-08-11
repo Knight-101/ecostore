@@ -5,7 +5,7 @@ import { DisplayDiv } from "./featured";
 // import meta from "../assets/metaverse.jpg";
 const meta = "/assets/metaverse.jpg";
 
-const AddYourStore = ({ setIsOpen }) => {
+export const AddYourStore = ({ setIsOpen }) => {
   return (
     <div className="add-store-main" onClick={() => setIsOpen(true)}>
       <span>&#43;</span>
