@@ -433,13 +433,16 @@ function ModelForest(props) {
   );
 }
 
-const ThreeNFT = ({ type }) => {
+const ThreeNFT = ({ type, pageType }) => {
   if (!type) {
     type = "seed";
   }
+  if (!pageType) {
+    pageType = "component";
+  }
 
   return (
-    <div className="three-nft-canvas">
+    <div className={ pageType === "component" ? "three-nft-canvas" : "three-nft-page-canvas"}>
       <Canvas camera={{ fov: 35, position: [-500, 250, 0] }} width="200">
         <Suspense fallback={null} />
         {/* <ambientLight /> */}

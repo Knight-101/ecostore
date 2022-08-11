@@ -177,7 +177,7 @@ const Navbar = () => {
       ) : (
         <div className="nav-nft-contain">
           <NFTProgress level={"seed"} money={7} />
-          <ThreeNFT type={"seed"} />
+          <ThreeNFT type={"tree_1"} />
         </div>
       )}
     </div>

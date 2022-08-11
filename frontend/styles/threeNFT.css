@@ -6,3 +6,48 @@
   box-shadow: inset 11px 11px 8px #070707, inset -10px -5px 8px #1e1e1e;
   padding: 5px 5px 10px 5px;
 }
+
+.three-nft-page-canvas {
+  border-radius: 20px;
+  width: clamp(300px, 70vw, 700px);
+  height: clamp(300px, 70vw, 700px);
+  background: #111111;
+  box-shadow: inset 11px 11px 8px #070707, inset -10px -5px 8px #1e1e1e;
+  padding: 5px 5px 10px 5px;
+}
+
+.one-row-nft {
+  border: 1px solid var(--color-primary);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  gap: 10px;
+}
+.one-row-nft-text {
+  display: flex;
+  align-items: center;
+  min-width: 300px;
+  width: 50vw;
+  max-width: 600px;
+  justify-content: center;
+}
+.one-row-nft > img {
+  width: 40%;
+  max-width: 300px;
+  min-width: 200px;
+}
+
+.your-nft-level {
+  background-color: #0d8f8f30;
+}
+
+.tree-page-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+}
