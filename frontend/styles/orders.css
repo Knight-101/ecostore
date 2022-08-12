@@ -1,0 +1,10 @@
+.product-order-image {
+  width: 100px;
+  height: 100px;
+  border: 1px solid red;
+}
+
+.table-wrap {
+  width: 95%;
+  margin: auto;
+}

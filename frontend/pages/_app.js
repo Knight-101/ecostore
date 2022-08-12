@@ -6,6 +6,7 @@ import "../styles/marketplaceHead.css";
 import "../styles/navbar.css";
 import "../styles/threeNFT.css";
 import "../styles/createStore.css";
+import "../styles/orders.css";
 import "../styles/productStyles.css"
 import Navbar from "../components/navbar";
 import CreateProduct from "../components/CreateProduct";
