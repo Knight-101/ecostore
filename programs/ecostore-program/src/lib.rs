@@ -4,7 +4,9 @@ use {
         system_program,
     },
     anchor_spl::{associated_token, token},
-    mpl_token_metadata::{instruction as token_instruction, ID as TOKEN_METADATA_ID},
+    mpl_token_metadata::{
+        instruction as token_instruction, state::DataV2, ID as TOKEN_METADATA_ID,
+    },
 };
 
 declare_id!("Gj8aZFEWp7TwXjBaMrRxEMEgCMN9yStmnpksjBExuwr8");
@@ -22,6 +24,7 @@ pub mod ecostore_program {
         let nft_account = &mut ctx.accounts.nft_data;
         nft_account.mint_address = ctx.accounts.mint.key();
         nft_account.donated = 0;
+        nft_account.level = 1;
         system_program::create_account(
             CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
@@ -123,7 +126,43 @@ pub mod ecostore_program {
         Ok(())
     }
 
-    pub fn donate(ctx: Context<Donate>, amount: u64) -> Result<NftData> {
+    pub fn update_metadata(
+        ctx: Context<UpdateMetadata>,
+        metadata_title: String,
+        metadata_symbol: String,
+        metadata_new_url: String,
+    ) -> ProgramResult {
+        msg!("Updating...");
+        invoke(
+            &token_instruction::update_metadata_accounts_v2(
+                TOKEN_METADATA_ID,
+                ctx.accounts.metadata.key(),
+                ctx.accounts.update_authority.key(),
+                None,
+                Some(DataV2 {
+                    name: metadata_title,
+                    symbol: metadata_symbol,
+                    uri: metadata_new_url,
+                    seller_fee_basis_points: 5,
+                    creators: None,
+                    collection: None,
+                    uses: None,
+                }),
+                None,
+                Some(true),
+            ),
+            &[
+                ctx.accounts.metadata.to_account_info(),
+                ctx.accounts.update_authority.to_account_info(),
+            ],
+        )?;
+        let nft_data = &mut ctx.accounts.nft_data;
+        nft_data.level += 1;
+
+        Ok(())
+    }
+
+    pub fn donate(ctx: Context<Donate>, amount: u64) -> ProgramResult {
         let sender = &ctx.accounts.sender;
         let sender_tokens = &ctx.accounts.sender_tokens;
         let recipient_tokens = &ctx.accounts.recipient_tokens;
@@ -144,16 +183,13 @@ pub mod ecostore_program {
         let nft_data = &mut ctx.accounts.nft_data;
         nft_data.donated += amount;
 
-        Ok(NftData {
-            mint_address: nft_data.mint_address,
-            donated: nft_data.donated,
-        })
+        Ok(())
     }
 }
 
 #[derive(Accounts)]
 pub struct MintNft<'info> {
-    #[account(init, payer=mint_authority, space=100, seeds=[b"MINT_CR".as_ref(), mint_authority.key().as_ref()], bump)]
+    #[account(init, payer=mint_authority, space=100, seeds=[b"MINT_CRB".as_ref(), mint_authority.key().as_ref()], bump)]
     pub nft_data: Account<'info, NftData>,
     /// CHECK: We're about to create this with Metaplex
     #[account(mut)]
@@ -180,6 +216,7 @@ pub struct MintNft<'info> {
 pub struct NftData {
     pub mint_address: Pubkey,
     pub donated: u64,
+    pub level: u8,
 }
 
 #[derive(Accounts)]
@@ -193,4 +230,16 @@ pub struct Donate<'info> {
     #[account(mut)]
     pub recipient_tokens: Account<'info, token::TokenAccount>,
     pub token_program: Program<'info, token::Token>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateMetadata<'info> {
+    #[account(mut)]
+    pub nft_data: Account<'info, NftData>,
+    /// CHECK: We're about to create this with Metaplex
+    #[account(mut)]
+    pub metadata: UncheckedAccount<'info>,
+    pub update_authority: Signer<'info>,
+    /// CHECK: Metaplex will check this
+    pub token_metadata_program: UncheckedAccount<'info>,
 }

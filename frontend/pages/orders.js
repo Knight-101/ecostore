@@ -14,17 +14,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-
-function createData(name, calories, fat, carbs, protein, price) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-  };
-}
+import Web3Context from "../contexts/Web3Context";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -74,16 +64,12 @@ function Row(props) {
           </IconButton>
         </StyledTableCell>
         <StyledTableCell sx={{ width: "120px" }}>
-          <img
-            src="/assets/nft_forest.png"
-            alt=""
-            className="product-order-image"
-          />
+          <img src={row.image} alt="" className="product-order-image" />
         </StyledTableCell>
         <StyledTableCell>
-
-          <div>product Name Here, Big Name</div>
-          <div>By: Seller Name</div>
+          <div>{row.productName}</div>
+          <div>By: {row.storeName}</div>
+          <div>Order Id: {row.orderId}</div>
         </StyledTableCell>
       </StyledTableRow>
       <StyledTableRow>
@@ -96,9 +82,9 @@ function Row(props) {
               <Typography variant="h6" gutterBottom component="div">
                 Details
               </Typography>
-              <div>Hash: 0x1234567890123456789012345678901234567890</div>
-              <div>Amount: $100</div>
-              <div>Date: 02/09/2002</div>
+              <div>Hash: {row.hash}</div>
+              <div>Amount: ${row.amount}</div>
+              <div>Date: {row.date}</div>
             </Box>
           </Collapse>
         </StyledTableCell>
@@ -107,40 +93,45 @@ function Row(props) {
   );
 }
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0, 3.99),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3, 4.99),
-  createData("Eclair", 262, 16.0, 24, 6.0, 3.79),
-  createData("Cupcake", 305, 3.7, 67, 4.3, 2.5),
-  createData("Gingerbread", 356, 16.0, 49, 3.9, 1.5),
-];
-
 export default function CollapsibleTable() {
+  const { walletAddress, fetchOrderDetails } = React.useContext(Web3Context);
+  const [orders, setOrders] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchOrders = async () => {
+      const data = await fetchOrderDetails();
+      data && setOrders([...data]);
+    };
+    fetchOrders();
+  }, [walletAddress]);
+
   return (
     <div className="table-wrap">
-      <TableContainer component={Paper}>
-        <Table
-          aria-label="collapsible table"
-          sx={{ backgroundColor: "transparent" }}
-        >
-          <TableHead sx={{ backgroundColor: "transparent" }}>
-            <StyledTableRow>
-              <StyledTableCell
-                align="center"
-                colSpan={6}
-                sx={{ backgroundColor: "transparent" }}
-              >
-                Your Orders
-              </StyledTableCell>
-            </StyledTableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <Row key={row.name} row={row} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {orders && (
+        <TableContainer component={Paper}>
+          <Table
+            aria-label="collapsible table"
+            sx={{ backgroundColor: "transparent" }}
+          >
+            <TableHead sx={{ backgroundColor: "transparent" }}>
+              <StyledTableRow>
+                <StyledTableCell
+                  align="center"
+                  colSpan={6}
+                  sx={{ backgroundColor: "transparent" }}
+                >
+                  Your Orders
+                </StyledTableCell>
+              </StyledTableRow>
+            </TableHead>
+            <TableBody>
+              {orders?.map((row, idx) => (
+                <Row key={idx} row={row} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </div>
   );
 }

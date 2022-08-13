@@ -7,22 +7,22 @@ import Web3Context from "../../contexts/Web3Context";
 import styles from "../../styles/CreateProduct.module.css";
 
 export const AddYourProduct = ({ setIsOpen }) => {
-    return (
+  return (
     <div className={styles.add_prod_wrap}>
       <div className={styles.add_product_main} onClick={() => setIsOpen(true)}>
         <span>&#43;</span>
-        Add Your Store
+        Add New Product
       </div>
-      </div>
-    );
-  };
+    </div>
+  );
+};
 
 const User = () => {
   const { fetchProducts } = useContext(Web3Context);
   const router = useRouter();
   const [products, setProducts] = useState(null);
   const [isOwner, setOwner] = useState(true);
-    const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { id } = router.query;
 
   useEffect(() => {
@@ -67,8 +67,8 @@ const User = () => {
   return (
     <>
       <div className="store-container">
-        <AddYourProduct setIsOpen={setIsOpen}/>
-      {isOwner && isOpen && <CreateProduct storeId={id} close = {setIsOpen}/>}
+        <AddYourProduct setIsOpen={setIsOpen} />
+        {isOwner && isOpen && <CreateProduct storeId={id} close={setIsOpen} />}
         {prod.map((item) => (
           <Product Itemkey={item.id} product={item} />
         ))}

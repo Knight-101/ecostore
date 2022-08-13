@@ -13,6 +13,8 @@ const main = async () => {
   const testNftSymbol = "CRB";
   const testNftUri =
     "https://raw.githubusercontent.com/Coding-and-Crypto/Solana-NFT-Marketplace/master/assets/example.json";
+  const newUri =
+    "https://raw.githubusercontent.com/Knight-101/foodiFrontend/main/test.json";
 
   console.log("🚀 Starting test...");
   // Configure the client to use the local cluster.
@@ -25,7 +27,7 @@ const main = async () => {
     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
   );
 
-  // Derive the mint address and the associated token account address
+  // // Derive the mint address and the associated token account address
 
   // const mintKeypair = anchor.web3.Keypair.generate();
   // const tokenAddress = await anchor.utils.token.associatedAddress({
@@ -60,13 +62,13 @@ const main = async () => {
   // )[0];
   // console.log("Master edition metadata initialized");
 
-  const [nftData] = await PublicKey.findProgramAddress(
-    [
-      anchor.utils.bytes.utf8.encode("MINT_CR"),
-      provider.wallet.publicKey.toBuffer(),
-    ],
-    program.programId
-  );
+  // const [nftData] = await PublicKey.findProgramAddress(
+  //   [
+  //     anchor.utils.bytes.utf8.encode("MINT_CRB"),
+  //     provider.wallet.publicKey.toBuffer(),
+  //   ],
+  //   program.programId
+  // );
 
   // // Transact with the "mint" function in our on-chain program
 
@@ -85,42 +87,63 @@ const main = async () => {
   //   .rpc();
   // console.log("Minted");
   // const nftAccount = await program.account.nftData.fetch(nftData);
-  const usdcAddress = new PublicKey(
-    "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
-  );
-  const receiverPublicKey = new PublicKey(
-    "6WzFCFukTTbwVZnRpkRGtX1GWbpCfc9AVQVeSkgVG8cz"
-  );
-  const senderPublicKey = wallet.publicKey;
-  const senderUsdcAddress = await getAssociatedTokenAddress(
-    usdcAddress,
-    senderPublicKey
-  );
+  // const usdcAddress = new PublicKey(
+  //   "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+  // );
+  // const receiverPublicKey = new PublicKey(
+  //   "6WzFCFukTTbwVZnRpkRGtX1GWbpCfc9AVQVeSkgVG8cz"
+  // );
+  // const senderPublicKey = wallet.publicKey;
+  // const senderUsdcAddress = await getAssociatedTokenAddress(
+  //   usdcAddress,
+  //   senderPublicKey
+  // );
 
-  const recipientUsdcAddress = await getAssociatedTokenAddress(
-    usdcAddress,
-    receiverPublicKey
-  );
+  // const recipientUsdcAddress = await getAssociatedTokenAddress(
+  //   usdcAddress,
+  //   receiverPublicKey
+  // );
 
-  const price = 0.01;
-  // This is new, we're getting the mint address of the token we want to transfer
-  const usdcMint = await getMint(provider.connection, usdcAddress);
+  // const price = 0.01;
+  // // This is new, we're getting the mint address of the token we want to transfer
+  // const usdcMint = await getMint(provider.connection, usdcAddress);
 
-  const tx = await program.rpc.donate(
-    new anchor.BN(price * 10 ** usdcMint.decimals),
-    {
-      accounts: {
-        nftData,
-        sender: wallet.publicKey,
-        senderTokens: senderUsdcAddress,
-        recipientTokens: recipientUsdcAddress,
-        tokenProgram: TOKEN_PROGRAM_ID,
-      },
-    }
-  );
-  console.log(tx);
-  const nftAccount = await program.account.nftData.fetch(nftData);
-  console.log(nftAccount.donated.toNumber());
+  // const tx = await program.rpc.donate(
+  //   new anchor.BN(price * 10 ** usdcMint.decimals),
+  //   {
+  //     accounts: {
+  //       nftData,
+  //       sender: wallet.publicKey,
+  //       senderTokens: senderUsdcAddress,
+  //       recipientTokens: recipientUsdcAddress,
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //     },
+  //   }
+  // );
+  // console.log(tx);
+  // const nftAccount = await program.account.nftData.fetch(nftData);
+  // // console.log(nftAccount.donated.toNumber());
+
+  // const foundMetadataAddress = (
+  //   await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from("metadata"),
+  //       TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+  //       nftAccount.mintAddress.toBuffer(),
+  //     ],
+  //     TOKEN_METADATA_PROGRAM_ID
+  //   )
+  // )[0];
+
+  // const tx = await program.methods
+  //   .updateMetadata(testNftTitle, testNftSymbol, newUri)
+  //   .accounts({
+  //     metadata: foundMetadataAddress,
+  //     updateAuthority: wallet.publicKey,
+  //     tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+  //   })
+  //   .rpc();
+  // console.log("updated", tx);
 };
 
 const runMain = async () => {

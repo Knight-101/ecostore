@@ -435,23 +435,27 @@ function ModelForest(props) {
 
 const ThreeNFT = ({ type, pageType }) => {
   if (!type) {
-    type = "seed";
+    type = 1;
   }
   if (!pageType) {
     pageType = "component";
   }
 
   return (
-    <div className={ pageType === "component" ? "three-nft-canvas" : "three-nft-page-canvas"}>
+    <div
+      className={
+        pageType === "component" ? "three-nft-canvas" : "three-nft-page-canvas"
+      }
+    >
       <Canvas camera={{ fov: 35, position: [-500, 250, 0] }} width="200">
         <Suspense fallback={null} />
         {/* <ambientLight /> */}
         <directionalLight intensity={1} position={[-600, 500, 500]} />
-        {type === "seed" && <ModelSeed />}
-        {type === "plant" && <ModelPlant />}
-        {type === "tree_1" && <ModelSingleTree />}
-        {type === "tree_2" && <ModelGroupTree />}
-        {type === "forest" && <ModelForest />}
+        {type === 1 && <ModelSeed />}
+        {type === 2 && <ModelPlant />}
+        {type === 3 && <ModelSingleTree />}
+        {type === 4 && <ModelGroupTree />}
+        {type === 5 && <ModelForest />}
         <OrbitControls
           enablePan={false}
           enableZoom={false}

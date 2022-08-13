@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Web3Context from "../contexts/Web3Context";
 import ThreeNFT from "./threeNFT";
 // import logo from "../assets/ecostore_2.svg";
+import metadata from "../metadata_uri.json";
 
 const SvgAnimation = () => {
   return (
@@ -119,19 +120,19 @@ const SvgAnimation = () => {
   );
 };
 
-const NFTProgress = ({ level, money }) => {
+const NFTProgress = ({ level, money, upgrade, upgradeFunc }) => {
   if (!level) {
-    level = "seed";
+    level = 1;
   }
   if (!money) {
-    money = 7;
+    money = 0;
   }
   const levelToRange = {
-    seed: [0, 10],
-    plant: [10, 20],
-    tree_1: [20, 30],
-    tree_2: [30, 50],
-    forest: [50, 100],
+    1: [0, 10],
+    2: [10, 20],
+    3: [20, 50],
+    4: [50, 100],
+    5: [100],
   };
 
   const percent =
@@ -154,20 +155,118 @@ const NFTProgress = ({ level, money }) => {
         <div className="nft-progress-level-text">{levelToRange[level][1]}</div>
       </div>
       <div className="nft-prog-description">
-        Level Up your NFT by offsetting your carbon emissions.
+        {upgrade ? (
+          <button type="button" onClick={() => upgradeFunc()}>
+            Upgrade
+          </button>
+        ) : (
+          <>Level Up your NFT by offsetting your carbon emissions.</>
+        )}
       </div>
     </div>
   );
 };
 const Navbar = () => {
-  const { walletAddress, connectWallet } = useContext(Web3Context);
-  console.log(walletAddress);
+  const {
+    walletAddress,
+    connectWallet,
+    mintCRB,
+    getNftDetails,
+    upgradeNFT,
+    donate,
+  } = useContext(Web3Context);
+
+  const [minted, setMinted] = useState(null);
+  const [donated, setDonated] = useState(null);
+  const [level, setLevel] = useState(null);
+  const [upgrade, setUpgrade] = useState(false);
+  const [nextLevel, setNextLevel] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const nftData = async () => {
+      const data = await getNftDetails();
+
+      if (data) {
+        setLoading(true);
+        const donation = data.donated.toNumber() * 10 ** -6;
+        const nftLevel = data.level;
+        setDonated(donation);
+        setLevel(nftLevel);
+
+        switch (true) {
+          case 0 <= donation && donation < 10:
+            if (nftLevel !== 1) {
+              setUpgrade(true);
+              setNextLevel(1);
+            }
+
+            break;
+          case 10 <= donation && donation < 20:
+            if (nftLevel !== 2) {
+              setUpgrade(true);
+              setNextLevel(2);
+            }
+            break;
+          case 20 <= donation && donation < 50:
+            if (nftLevel !== 3) {
+              setUpgrade(true);
+              setNextLevel(3);
+            }
+            break;
+          case 50 <= donation && donation < 100:
+            if (nftLevel !== 4) {
+              setUpgrade(true);
+              setNextLevel(4);
+            }
+            break;
+          case 100 <= donation:
+            if (nftLevel !== 5) {
+              setUpgrade(true);
+              setNextLevel(5);
+            }
+            break;
+          default:
+            break;
+        }
+        setMinted(true);
+        setLoading(false);
+      } else {
+        setMinted(false);
+      }
+    };
+    walletAddress && nftData();
+  }, [walletAddress, upgrade, donated]);
+
+  const upgradeFunc = async () => {
+    const newUri = metadata[nextLevel.toString()];
+    const tx = await upgradeNFT(newUri);
+    setUpgrade(false);
+    setNextLevel(null);
+  };
+  const donateFunc = async () => {
+    const newDonation = await donate(8);
+    setDonated(newDonation * 10 ** -6);
+  };
+
+  // useEffect(() => {
+  //   minted &&
+  //   const getNftDetails = async () => {
+  //     const data = await getNftDetails();
+  //     data && setMinted(true);
+  //   };
+  //   walletAddress && getNft();
+  // }, []);
+
   return (
     <div className="nav-main">
       <div className="nav-body">
         {/* <img src={logo} alt="" /> */}
         <SvgAnimation />
       </div>
+      <button type="button" onClick={donateFunc}>
+        Donate
+      </button>
       {!walletAddress ? (
         <div className="nav-nft-contain">
           <button type="button" onClick={() => connectWallet()}>
@@ -176,8 +275,29 @@ const Navbar = () => {
         </div>
       ) : (
         <div className="nav-nft-contain">
-          <NFTProgress level={"seed"} money={7} />
-          <ThreeNFT type={"tree_1"} />
+          {!loading && minted ? (
+            <>
+              <NFTProgress
+                level={level}
+                money={donated}
+                upgrade={upgrade}
+                upgradeFunc={upgradeFunc}
+              />
+              <ThreeNFT type={level} />
+            </>
+          ) : (
+            minted === false && (
+              <button
+                type="button"
+                onClick={async () => {
+                  const data = await mintCRB();
+                  console.log(data);
+                }}
+              >
+                MINT
+              </button>
+            )
+          )}
         </div>
       )}
     </div>

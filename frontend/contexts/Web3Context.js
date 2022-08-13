@@ -12,9 +12,16 @@ import {
   createTransferCheckedInstruction,
   getAssociatedTokenAddress,
   getMint,
+  TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { toast } from "react-toastify";
-import { Program, AnchorProvider, web3 } from "@project-serum/anchor";
+import {
+  Program,
+  AnchorProvider,
+  web3,
+  utils,
+  BN,
+} from "@project-serum/anchor";
 import BigNumber from "bignumber.js";
 import products from "../pages/api/products.json";
 import idl from "../idl/idl.json";
@@ -29,6 +36,7 @@ const supabase = createClient(
 const { SystemProgram } = web3;
 // Get our program's id from the IDL file.
 const programID = new PublicKey(idl.metadata.address);
+
 const opts = {
   preflightCommitment: "processed",
 };
@@ -238,14 +246,17 @@ export const Web3Provider = (props) => {
       const { orderID, storeID, price, itemId } = order;
       if (!walletAddress) {
         toast.error("Wallet not connected");
+        return;
       }
 
       if (!orderID) {
         console.log("Missing order ID");
+        return;
       }
 
       if (!price) {
         console.log("Item not found.");
+        return;
       }
 
       let { data, error } = await supabase
@@ -364,8 +375,295 @@ export const Web3Provider = (props) => {
     }
   };
 
+  functionsToExport.fetchOrderDetails = async () => {
+    try {
+      if (!walletAddress) {
+        toast.error("Wallet not connected");
+        return;
+      }
+      let orderDetails = [];
+      let { data: orders, error } = await supabase
+        .from("orders")
+        .select("created_at,order_id,store_id,item_id,amount,txn_hash")
+        .eq("buyer", walletAddress);
+
+      if (error) {
+        toast.error(error);
+        console.error(error);
+        return;
+      }
+
+      for (let i = 0; i < orders?.length; i++) {
+        // const timestamp = orders[i].created_at;
+        // const orderId = orders[i].order_id;
+        const storeId = orders[i].store_id;
+        const itemId = orders[i].item_id;
+        let { data: store, error: error1 } = await supabase
+          .from("stores")
+          .select("name")
+          .eq("id", storeId);
+
+        let { data: item, error: error2 } = await supabase
+          .from("products")
+          .select("name,image_url")
+          .eq("id", itemId);
+
+        if (error1 || error2) {
+          console.error(error1);
+          console.error(error2);
+          return;
+        }
+        const orderObject = {
+          date: orders[i].created_at,
+          image: item[0].image_url,
+          orderId: orders[i].order_id,
+          storeName: store[0].name,
+          productName: item[0].name,
+          amount: orders[i].amount,
+          hash: orders[i].txn_hash,
+        };
+        orderDetails.push(orderObject);
+      }
+
+      return orderDetails;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+
+  functionsToExport.mintCRB = async () => {
+    try {
+      const NftTitle = "Carbon NFT";
+      const NftSymbol = "CRB";
+      const NftUri =
+        "https://gateway.ipfscdn.io/ipfs/QmZHZUHfL9W65Y8pzkNetiJfQDFtidiCVsYKYtaCUbiPiy";
+
+      const provider = getProvider();
+      const wallet = provider.wallet;
+
+      const program = new Program(idl, programID, provider);
+
+      const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+        "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+      );
+
+      // Derive the mint address and the associated token account address
+
+      const mintKeypair = web3.Keypair.generate();
+      const tokenAddress = await utils.token.associatedAddress({
+        mint: mintKeypair.publicKey,
+        owner: wallet.publicKey,
+      });
+      console.log(`New token: ${mintKeypair.publicKey}`);
+
+      // // Derive the metadata and master edition addresses
+
+      const metadataAddress = (
+        await web3.PublicKey.findProgramAddress(
+          [
+            Buffer.from("metadata"),
+            TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+            mintKeypair.publicKey.toBuffer(),
+          ],
+          TOKEN_METADATA_PROGRAM_ID
+        )
+      )[0];
+      console.log("Metadata initialized");
+      const masterEditionAddress = (
+        await web3.PublicKey.findProgramAddress(
+          [
+            Buffer.from("metadata"),
+            TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+            mintKeypair.publicKey.toBuffer(),
+            Buffer.from("edition"),
+          ],
+          TOKEN_METADATA_PROGRAM_ID
+        )
+      )[0];
+      console.log("Master edition metadata initialized");
+
+      const [nftData] = await PublicKey.findProgramAddress(
+        [
+          utils.bytes.utf8.encode("MINT_CRB"),
+          provider.wallet.publicKey.toBuffer(),
+        ],
+        program.programId
+      );
+
+      // // Transact with the "mint" function in our on-chain program
+
+      await program.methods
+        .mint(NftTitle, NftSymbol, NftUri)
+        .accounts({
+          nftData,
+          masterEdition: masterEditionAddress,
+          metadata: metadataAddress,
+          mint: mintKeypair.publicKey,
+          tokenAccount: tokenAddress,
+          mintAuthority: wallet.publicKey,
+          tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+        })
+        .signers([mintKeypair])
+        .rpc();
+      toast.success("NFT Minted!!");
+      const nftAccount = await program.account.nftData.fetch(nftData);
+
+      return nftAccount;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+
+  functionsToExport.upgradeNFT = async (newUri) => {
+    try {
+      const NftTitle = "Carbon NFT";
+      const NftSymbol = "CRB";
+
+      const provider = getProvider();
+      const wallet = provider.wallet;
+
+      const program = new Program(idl, programID, provider);
+
+      const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+        "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+      );
+
+      const [nftData] = await PublicKey.findProgramAddress(
+        [
+          utils.bytes.utf8.encode("MINT_CRB"),
+          provider.wallet.publicKey.toBuffer(),
+        ],
+        program.programId
+      );
+
+      const nftAccount = await program.account.nftData.fetch(nftData);
+      // console.log(nftAccount.donated.toNumber());
+
+      const foundMetadataAddress = (
+        await web3.PublicKey.findProgramAddress(
+          [
+            Buffer.from("metadata"),
+            TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+            nftAccount.mintAddress.toBuffer(),
+          ],
+          TOKEN_METADATA_PROGRAM_ID
+        )
+      )[0];
+
+      const tx = await program.methods
+        .updateMetadata(NftTitle, NftSymbol, newUri)
+        .accounts({
+          nftData,
+          metadata: foundMetadataAddress,
+          updateAuthority: wallet.publicKey,
+          tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+        })
+        .rpc();
+
+      tx && toast.success("NFT upgraded!");
+
+      return tx;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+
+  functionsToExport.getNftDetails = async () => {
+    try {
+      const provider = getProvider();
+      const wallet = provider.wallet;
+
+      const program = new Program(idl, programID, provider);
+
+      const [nftData] = await PublicKey.findProgramAddress(
+        [
+          utils.bytes.utf8.encode("MINT_CRB"),
+          provider.wallet.publicKey.toBuffer(),
+        ],
+        program.programId
+      );
+      //check if nft account minted
+      const isNFT = await program.account.nftData.getAccountInfo(nftData);
+
+      const nftDetails =
+        isNFT && (await program.account.nftData.fetch(nftData));
+
+      return nftDetails;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  functionsToExport.donate = async (amount) => {
+    try {
+      const provider = getProvider();
+      const wallet = provider.wallet;
+
+      const program = new Program(idl, programID, provider);
+
+      const [nftData] = await PublicKey.findProgramAddress(
+        [
+          utils.bytes.utf8.encode("MINT_CRB"),
+          provider.wallet.publicKey.toBuffer(),
+        ],
+        program.programId
+      );
+
+      const receiverPublicKey = new PublicKey(
+        "BdTzJP4ofqmL4bzoJJ4hPUuBPVihL5BLHvgh7BBhNA7"
+      );
+      const senderPublicKey = wallet.publicKey;
+      const senderUsdcAddress = await getAssociatedTokenAddress(
+        usdcAddress,
+        senderPublicKey
+      );
+
+      const recipientUsdcAddress = await getAssociatedTokenAddress(
+        usdcAddress,
+        receiverPublicKey
+      );
+
+      // This is new, we're getting the mint address of the token we want to transfer
+      const usdcMint = await getMint(provider.connection, usdcAddress);
+
+      const tx = await program.rpc.donate(
+        new BN(amount * 10 ** usdcMint.decimals),
+        {
+          accounts: {
+            nftData,
+            sender: wallet.publicKey,
+            senderTokens: senderUsdcAddress,
+            recipientTokens: recipientUsdcAddress,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          },
+        }
+      );
+      let { data, error } = await supabase.from("donations").insert([
+        {
+          user: walletAddress,
+          amount: amount.toString(),
+          hash: tx,
+        },
+      ]);
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      toast.success("Thankyou for your donation");
+      const nftAccount = await program.account.nftData.fetch(nftData);
+
+      return nftAccount.donated.toNumber();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // useEffect(() => {
-  //   walletAddress && console.log(functionsToExport.fetchMyStores());
+  //   walletAddress && console.log(functionsToExport.getNftDetails());
   // }, [walletAddress]);
 
   return (

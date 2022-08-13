@@ -77,6 +77,45 @@
       ]
     },
     {
+      "name": "updateMetadata",
+      "accounts": [
+        {
+          "name": "nftData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "updateAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "metadataTitle",
+          "type": "string"
+        },
+        {
+          "name": "metadataSymbol",
+          "type": "string"
+        },
+        {
+          "name": "metadataNewUrl",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "donate",
       "accounts": [
         {
@@ -110,10 +149,7 @@
           "name": "amount",
           "type": "u64"
         }
-      ],
-      "returns": {
-        "defined": "NftData"
-      }
+      ]
     }
   ],
   "accounts": [
@@ -129,6 +165,10 @@
           {
             "name": "donated",
             "type": "u64"
+          },
+          {
+            "name": "level",
+            "type": "u8"
           }
         ]
       }
