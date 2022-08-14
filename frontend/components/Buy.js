@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useMemo } from "react";
-import { Keypair, Connection } from "@solana/web3.js";
+import { Keypair, Connection, clusterApiUrl } from "@solana/web3.js";
 import { findReference, FindReferenceError } from "@solana/pay";
 import IPFSDownload from "./IpfsDownload";
 import Web3Context from "../contexts/Web3Context";
@@ -15,16 +15,18 @@ const STATUS = {
 export default function Buy({ itemID, price, filename, hash }) {
   const router = useRouter();
   const { id } = router.query;
-  const { walletAddress, buyProduct, hasPurchased } = useContext(Web3Context);
+  const { walletAddress, buyProduct, hasPurchased, buyProductQR, addOrder } =
+    useContext(Web3Context);
   const orderID = useMemo(() => Keypair.generate().publicKey, []); // Public key used to identify the order
   const [loading, setLoading] = useState(false); // Loading state of all above
   const [status, setStatus] = useState(STATUS.Initial); // Tracking transaction status
+  const [QR, setQR] = useState(null); // Tracking transaction status
 
   const order =
     id &&
     useMemo(
       () => ({
-        orderID: orderID.toString(),
+        orderID: orderID,
         storeID: id,
         price: price,
         itemId: itemID,
@@ -37,10 +39,12 @@ export default function Buy({ itemID, price, filename, hash }) {
     setLoading(true);
     // Attempt to send the transaction to the network
     try {
-      const txHash = await buyProduct(order);
-      console.log(
-        `Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`
-      );
+      const qrCode = await buyProductQR(order);
+      setQR(true);
+      qrCode.append(document.getElementById("canvas"));
+      // console.log(
+      //   `Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`
+      // );
       setStatus(STATUS.Submitted);
     } catch (error) {
       console.error(error);
@@ -65,15 +69,16 @@ export default function Buy({ itemID, price, filename, hash }) {
       const interval = setInterval(async () => {
         try {
           const connection = new Connection(clusterApiUrl("devnet"));
-          const result = await findReference(connection, orderID);
-          console.log("Finding tx reference", result.confirmationStatus);
-          if (
-            result.confirmationStatus === "confirmed" ||
-            result.confirmationStatus === "finalized"
-          ) {
+          const signatureInfo = await findReference(connection, orderID, {
+            finality: "confirmed",
+          });
+          console.log("Finding tx reference", signatureInfo.signature);
+          const orderConfirm = await addOrder(order, signatureInfo.signature);
+          if (orderConfirm) {
             clearInterval(interval);
             setStatus(STATUS.Paid);
             setLoading(false);
+            setQR(false);
             toast.success("Thankyou for your purchase");
           }
         } catch (e) {
@@ -105,6 +110,7 @@ export default function Buy({ itemID, price, filename, hash }) {
 
   return (
     <div>
+      {QR && <div id="canvas"></div>}
       {status === STATUS.Paid ? (
         <IPFSDownload filename={filename} hash={hash} />
       ) : (

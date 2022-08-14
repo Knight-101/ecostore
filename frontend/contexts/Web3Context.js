@@ -15,6 +15,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { toast } from "react-toastify";
+import { createQR, encodeURL } from "@solana/pay";
 import {
   Program,
   AnchorProvider,
@@ -286,8 +287,7 @@ export const Web3Provider = (props) => {
       const sellerPublicKey = new PublicKey(sellerAddress);
       const buyerPublicKey = new PublicKey(walletAddress);
 
-      const endpoint = clusterApiUrl("devnet");
-      const connection = new Connection(endpoint);
+      const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
       const buyerUsdcAddress = await getAssociatedTokenAddress(
         usdcAddress,
@@ -331,19 +331,19 @@ export const Web3Provider = (props) => {
 
       const txHash = await provider.sendAndConfirm(tx);
 
-      await supabase.from("orders").insert([
+      let { error: err } = await supabase.from("orders").insert([
         {
           store_id: storeID,
           buyer: walletAddress,
-          order_id: orderID,
+          order_id: orderID.toString(),
           item_id: itemId,
           amount: price,
           txn_hash: txHash,
         },
       ]);
-      if (error) {
-        toast.error(error);
-        console.error(error);
+      if (err) {
+        toast.error(err);
+        console.error(err);
         return;
       }
 
@@ -354,6 +354,113 @@ export const Web3Provider = (props) => {
       console.error(err);
     }
   };
+
+  functionsToExport.buyProductQR = async (order) => {
+    try {
+      const { orderID, storeID, price, itemId } = order;
+      if (!walletAddress) {
+        toast.error("Wallet not connected");
+        return;
+      }
+
+      if (!orderID) {
+        console.log("Missing order ID");
+        return;
+      }
+
+      if (!price) {
+        console.log("Item not found.");
+        return;
+      }
+
+      let { data, error } = await supabase
+        .from("stores")
+        .select("owner,name")
+        .eq("id", parseInt(storeID));
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      const buyerTokenBalance = await getUsdcBalance();
+
+      if (
+        parseFloat(buyerTokenBalance.value.amount) <
+        parseFloat(price) * 10 ** buyerTokenBalance.value.decimals
+      ) {
+        toast.error("Insufficient token balance!!");
+        return;
+      }
+
+      const sellerAddress = data[0].owner;
+
+      const bigAmount = BigNumber(price);
+
+      const sellerPublicKey = new PublicKey(sellerAddress);
+      const buyerPublicKey = new PublicKey(walletAddress);
+
+      const label = data[0].name;
+      const message = `Your order ID - ${orderID.toString()}`;
+
+      const url = encodeURL({
+        recipient: buyerPublicKey,
+        amount: bigAmount,
+        splToken: usdcAddress,
+        reference: orderID,
+        label,
+        message,
+      });
+      const qrCode = createQR(url);
+
+      return qrCode;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  functionsToExport.addOrder = async (order, hash) => {
+    try {
+      const { orderID, storeID, itemId, price } = order;
+      if (!walletAddress) {
+        toast.error("Wallet not connected");
+        return;
+      }
+
+      if (!orderID) {
+        console.log("Missing order ID");
+        return;
+      }
+
+      if (!price) {
+        console.log("Item not found.");
+        return;
+      }
+
+      let { error: err } = await supabase.from("orders").insert([
+        {
+          store_id: storeID,
+          buyer: walletAddress,
+          order_id: orderID,
+          item_id: itemId,
+          amount: price,
+          txn_hash: hash,
+        },
+      ]);
+      if (err) {
+        toast.error(err);
+        console.error(err);
+        return;
+      }
+
+      toast.success("Product Bought");
+
+      return true;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   functionsToExport.hasPurchased = async (itemId) => {
     try {
       let { data, error } = await supabase
