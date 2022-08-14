@@ -120,7 +120,7 @@ const SvgAnimation = () => {
   );
 };
 
-const NFTProgress = ({ level, money, upgrade, upgradeFunc }) => {
+export const NFTProgress = ({ level, money, upgrade, upgradeFunc }) => {
   if (!level) {
     level = 1;
   }

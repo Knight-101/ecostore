@@ -170,7 +170,7 @@ function ModelGroupTree(props) {
   return (
     <group {...props} dispose={null} ref={group}>
       <group position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={0.5}>
-        <group position={[50, 125, -100]} scale={0.75}>
+        <group position={[-100, 150, -100]} scale={0.75}>
           <mesh
             geometry={nodes.tree_crown.geometry}
             material={materials["Color 4"]}
@@ -186,7 +186,7 @@ function ModelGroupTree(props) {
             scale={100}
           />
         </group>
-        <group position={[50, -100, -100]} scale={0.25}>
+        <group position={[160, 50, -100]} scale={0.25}>
           <mesh
             geometry={nodes.treetop.geometry}
             material={materials["Color 8"]}
@@ -202,9 +202,9 @@ function ModelGroupTree(props) {
         </group>
       </group>
       <group
-        position={[-50, -50, -25]}
+        position={[0, -50, 45]}
         rotation={[-Math.PI / 2, 0, 0]}
-        scale={0.5}
+        scale={0.6}
       >
         <group position={[-19.54, 0, 0]}>
           <mesh
