@@ -262,6 +262,7 @@ const Navbar = () => {
     <div className="nav-main">
       <div className="nav-body">
         {/* <img src={logo} alt="" /> */}
+
         <SvgAnimation />
       </div>
       <button type="button" onClick={donateFunc}>
