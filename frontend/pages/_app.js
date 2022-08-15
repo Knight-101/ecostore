@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }) {
     <Web3Provider>
       <ToastContainer />
       <Navbar />
-      <PaymentModal />
+      {/* <PaymentModal /> */}
       <Component {...pageProps} />
       {/* <CreateProduct /> */}
     </Web3Provider>

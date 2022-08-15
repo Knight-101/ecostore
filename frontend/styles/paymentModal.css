@@ -183,7 +183,8 @@
   border-top: 2px dashed var(--color-primary);
   padding-top: 20px;
   margin-bottom: 20px;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 25px;
+  font-weight: 400;
+  letter-spacing: 1px;
   color: #ffffff;
 }
