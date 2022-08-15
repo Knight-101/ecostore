@@ -23,17 +23,18 @@
   /* border: 1px solid var(--color-primary); */
   /* padding-left: 20px; */
   width: 50vw;
-  min-width: 400px;
+  min-width: 275px;
   max-width: 800px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 75px;
+  height: clamp(50px, 10vw, 75px);
   border-radius: 200px;
   transform: translateY(-50%);
   background-color: var(--bg-primary);
   box-shadow: 0 0 40px 0px var(--color-primary);
 }
+
 .search-button {
   width: 100px;
   height: 100%;
@@ -89,13 +90,13 @@
 ::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: #aaaaaa;
-  font-size: 15px;
+  font-size: 12px;
   opacity: 1; /* Firefox */
 }
 ::-ms-input-placeholder {
   /* Microsoft Edge */
   color: #aaaaaa;
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .switch-wrap {
@@ -113,7 +114,7 @@
 }
 
 .switch-select {
-  width: 150px;
+  width: 125px;
   padding: 10px;
   display: flex;
   justify-content: center;
@@ -131,10 +132,10 @@
 
 .switch-currently-on {
   height: 100%;
-  width: 150px;
+  width: 125px;
   position: absolute;
   background: var(--color-primary);
   transition: 0.5s all;
-  opacity: 0.5;
+  opacity: 0.25;
   /* z-index: 21; */
 }

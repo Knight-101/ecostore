@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-const search = "/assets/search.svg"
+const search = "/assets/search.svg";
 
 const MarketplaceHead = (props) => {
   const handleChange = (e) => {
@@ -40,7 +40,7 @@ const MarketplaceHead = (props) => {
           </div>
           <div
             className="switch-currently-on"
-            style={{ left: props.mpvalue ? 0 : 150 }}
+            style={{ left: props.mpvalue ? 0 : 125 }}
           ></div>
         </div>
       </div>
