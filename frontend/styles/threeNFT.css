@@ -1,7 +1,8 @@
 .three-nft-canvas {
   border-radius: 20px;
-  width: 200px;
-  height: 150px;
+  width: clamp(150px, 20vw, 300px);
+  aspect-ratio: 1.4;
+  /* height: 100px; */
   background: #111111;
   box-shadow: inset 11px 11px 8px #070707, inset -10px -5px 8px #1e1e1e;
   padding: 5px 5px 10px 5px;

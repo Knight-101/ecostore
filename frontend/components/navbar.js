@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Web3Context from "../contexts/Web3Context";
 import ThreeNFT from "./threeNFT";
-// import logo from "../assets/ecostore_2.svg";
+import useWindowDimensions from "../utils/getWindowDim";
 import metadata from "../metadata_uri.json";
 
 const SvgAnimation = () => {
@@ -248,6 +248,13 @@ const Navbar = () => {
     const newDonation = await donate(8);
     setDonated(newDonation * 10 ** -6);
   };
+  var s_w = 1000;
+  var img_type = <></>;
+  if (typeof window !== "undefined") {
+    // Client-side-only code
+    const { width } = useWindowDimensions();
+    s_w = width;
+  }
 
   // useEffect(() => {
   //   minted &&
@@ -262,8 +269,13 @@ const Navbar = () => {
     <div className="nav-main">
       <div className="nav-body">
         {/* <img src={logo} alt="" /> */}
-
-        <SvgAnimation />
+        {s_w > 600 ? (
+          <SvgAnimation />
+        ) : (
+          <>
+            <img src="/assets/ecostore_small.svg" style={{ width: 60 }} />
+          </>
+        )}
       </div>
       <button type="button" onClick={donateFunc}>
         Donate
@@ -278,12 +290,12 @@ const Navbar = () => {
         <div className="nav-nft-contain">
           {!loading && minted ? (
             <>
-              <NFTProgress
+              {/* <NFTProgress
                 level={level}
                 money={donated}
                 upgrade={upgrade}
                 upgradeFunc={upgradeFunc}
-              />
+              /> */}
               <ThreeNFT type={level} />
             </>
           ) : (
