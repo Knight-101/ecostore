@@ -39,20 +39,22 @@
 .swiper-slide {
   display: flex;
   justify-content: center;
-  transform: scale(0.6);
   transition: 0.5s all;
+  transform: scale(0.85) !important;
+  filter: grayscale(50%);
 }
 
 .swiper-slide-active {
-  transform: scale(1);
+  transform: scale(1) !important;
+  filter: none;
 }
 
 .swiper-slide-prev {
-  transform: scale(0.8);
+  transform: scale(0.85) !important;
 }
 
 .swiper-slide-next {
-  transform: scale(0.8);
+  transform: scale(0.85) !important;
 }
 
 /* store banner style */
@@ -86,7 +88,7 @@
 
 .featured-store-data {
   padding: 5px 10px 0 10px;
-  background-color: var(--bg-primary);
+  background-color: #0d8f8f15;
   border-top: 10px solid var(--color-primary);
   /* border: 1px solid red; */
   /* border-radius: 20px; */

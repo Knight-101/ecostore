@@ -60,7 +60,7 @@ const Featured = (props) => {
           pagination={{
             clickable: true,
           }}
-          loop={true}
+          // loop={true}
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
           className="mySwiper"
