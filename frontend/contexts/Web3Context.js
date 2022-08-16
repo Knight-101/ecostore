@@ -68,19 +68,28 @@ export const Web3Provider = (props) => {
   };
 
   const getUsdcBalance = async (address) => {
+    const connection = new Connection(
+      clusterApiUrl("devnet"),
+      opts.preflightCommitment
+    );
     const userPublicKey = new PublicKey(walletAddress);
     const userUsdcAddress = await getAssociatedTokenAddress(
       usdcAddress,
       userPublicKey
     );
-    const connection = new Connection(
-      clusterApiUrl("devnet"),
-      opts.preflightCommitment
-    );
+    const account = await connection.getTokenAccountsByOwner(userPublicKey, {
+      mint: usdcAddress,
+    });
+    if (!account.value.length) {
+      toast.error("Token account not initialized");
+
+      return;
+    }
+
     const balance = await connection.getTokenAccountBalance(userUsdcAddress);
     return balance;
   };
-  walletAddress && getUsdcBalance();
+  // walletAddress && getUsdcBalance();
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -94,10 +103,11 @@ export const Web3Provider = (props) => {
             "Connected with Public Key:",
             response.publicKey.toString()
           );
+          toast.success("Wallet Connected");
           setWalletAddress(response.publicKey.toString());
         }
       } else {
-        alert("Solana object not found! Get a Phantom Wallet 👻");
+        toast.error("Solana object not found! Get a Phantom Wallet");
       }
     } catch (error) {
       console.error(error);
@@ -144,6 +154,41 @@ export const Web3Provider = (props) => {
 
     console.log(data);
     return data;
+  };
+
+  functionsToExport.offsetTransaction = async () => {
+    try {
+      toast.info("Buying Offset...");
+      const response = await axios.post(
+        "https://api.getchange.io/api/v1/climate/crypto_offset",
+
+        {
+          funds_collected: false,
+          count: 1,
+          currency: "sol",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          auth: {
+            username:
+              "pk_test_683b5b5afbbe903e8856557955324dc8a4b7d22045fa499c447e311e6d36421b",
+            password:
+              "sk_test_bb8535af95170e1bd1a857f625df1cdfbbb1f2f7bb04c747de1201e1ac8eb8d2",
+          },
+        }
+      );
+
+      const offset_amount = response.data.amount;
+      console.log(offset_amount);
+      const total_donated = await functionsToExport.donate(offset_amount);
+
+      return total_donated;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
   };
 
   functionsToExport.createStore = async (name, description, image) => {
@@ -242,7 +287,7 @@ export const Web3Provider = (props) => {
     }
   };
 
-  functionsToExport.buyProduct = async (order) => {
+  functionsToExport.buyProduct = async (order, offset) => {
     try {
       const { orderID, storeID, price, itemId } = order;
       if (!walletAddress) {
@@ -347,6 +392,10 @@ export const Web3Provider = (props) => {
         return;
       }
 
+      if (offset) {
+        await functionsToExport.offsetTransaction();
+      }
+
       toast.success("Product Bought");
 
       return txHash;
@@ -437,23 +486,27 @@ export const Web3Provider = (props) => {
         return;
       }
 
-      let { error: err } = await supabase.from("orders").insert([
-        {
-          store_id: storeID,
-          buyer: walletAddress,
-          order_id: orderID,
-          item_id: itemId,
-          amount: price,
-          txn_hash: hash,
-        },
-      ]);
-      if (err) {
-        toast.error(err);
-        console.error(err);
-        return;
-      }
+      const res = await functionsToExport.hasPurchased(itemId);
 
-      toast.success("Product Bought");
+      if (!res) {
+        let { error: err } = await supabase.from("orders").insert([
+          {
+            store_id: storeID,
+            buyer: walletAddress,
+            order_id: orderID,
+            item_id: itemId,
+            amount: price,
+            txn_hash: hash,
+          },
+        ]);
+
+        if (err) {
+          toast.error(err);
+          console.error(err);
+          return;
+        }
+        toast.success("Thankyou for your purchase");
+      }
 
       return true;
     } catch (err) {
@@ -476,6 +529,45 @@ export const Web3Provider = (props) => {
       }
 
       return data.length ? true : false;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+
+  functionsToExport.getDonations = async () => {
+    try {
+      let { data, error } = await supabase
+        .from("donations")
+        .select("amount,hash")
+        .eq("user", walletAddress);
+
+      if (error) {
+        toast.error(error);
+        console.error(error);
+        return;
+      }
+
+      return data;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+
+  functionsToExport.getOwner = async (id) => {
+    try {
+      let { data, error } = await supabase
+        .from("stores")
+        .select("owner")
+        .eq("id", parseInt(id));
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      return data[0].owner;
     } catch (err) {
       toast.error(err);
       console.error(err);
@@ -706,6 +798,10 @@ export const Web3Provider = (props) => {
 
   functionsToExport.donate = async (amount) => {
     try {
+      const nft = functionsToExport.getNftDetails();
+      if (!nft) {
+        toast.error("NFT not minted!");
+      }
       const provider = getProvider();
       const wallet = provider.wallet;
 
@@ -720,7 +816,7 @@ export const Web3Provider = (props) => {
       );
 
       const receiverPublicKey = new PublicKey(
-        "BdTzJP4ofqmL4bzoJJ4hPUuBPVihL5BLHvgh7BBhNA7"
+        "3hHz1XBsthyhKb5zvfAoCyUEizGrx6boTzqSGmGvhb1D"
       );
       const senderPublicKey = wallet.publicKey;
       const senderUsdcAddress = await getAssociatedTokenAddress(
@@ -769,10 +865,14 @@ export const Web3Provider = (props) => {
     }
   };
 
-  // useEffect(() => {
-  //   walletAddress && console.log(functionsToExport.getNftDetails());
-  // }, [walletAddress]);
+  useEffect(() => {
+    const onLoad = async () => {
+      await checkIfWalletIsConnected();
+    };
 
+    onLoad();
+  }, []);
+  // walletAddress && getUsdcBalance().then((res) => console.log(res));
   return (
     <Web3Context.Provider
       value={{

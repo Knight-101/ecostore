@@ -167,20 +167,12 @@ export const NFTProgress = ({ level, money, upgrade, upgradeFunc }) => {
   );
 };
 const Navbar = () => {
-  const {
-    walletAddress,
-    connectWallet,
-    mintCRB,
-    getNftDetails,
-    upgradeNFT,
-    donate,
-  } = useContext(Web3Context);
+  const { walletAddress, connectWallet, mintCRB, getNftDetails, donate } =
+    useContext(Web3Context);
 
   const [minted, setMinted] = useState(null);
   const [donated, setDonated] = useState(null);
   const [level, setLevel] = useState(null);
-  const [upgrade, setUpgrade] = useState(false);
-  const [nextLevel, setNextLevel] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -194,41 +186,6 @@ const Navbar = () => {
         setDonated(donation);
         setLevel(nftLevel);
 
-        switch (true) {
-          case 0 <= donation && donation < 10:
-            if (nftLevel !== 1) {
-              setUpgrade(true);
-              setNextLevel(1);
-            }
-
-            break;
-          case 10 <= donation && donation < 20:
-            if (nftLevel !== 2) {
-              setUpgrade(true);
-              setNextLevel(2);
-            }
-            break;
-          case 20 <= donation && donation < 50:
-            if (nftLevel !== 3) {
-              setUpgrade(true);
-              setNextLevel(3);
-            }
-            break;
-          case 50 <= donation && donation < 100:
-            if (nftLevel !== 4) {
-              setUpgrade(true);
-              setNextLevel(4);
-            }
-            break;
-          case 100 <= donation:
-            if (nftLevel !== 5) {
-              setUpgrade(true);
-              setNextLevel(5);
-            }
-            break;
-          default:
-            break;
-        }
         setMinted(true);
         setLoading(false);
       } else {
@@ -236,14 +193,8 @@ const Navbar = () => {
       }
     };
     walletAddress && nftData();
-  }, [walletAddress, upgrade, donated]);
+  }, [walletAddress, donated]);
 
-  const upgradeFunc = async () => {
-    const newUri = metadata[nextLevel.toString()];
-    const tx = await upgradeNFT(newUri);
-    setUpgrade(false);
-    setNextLevel(null);
-  };
   const donateFunc = async () => {
     const newDonation = await donate(8);
     setDonated(newDonation * 10 ** -6);

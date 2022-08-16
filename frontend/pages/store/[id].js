@@ -18,10 +18,10 @@ export const AddYourProduct = ({ setIsOpen }) => {
 };
 
 const User = () => {
-  const { fetchProducts } = useContext(Web3Context);
+  const { fetchProducts, getOwner } = useContext(Web3Context);
   const router = useRouter();
   const [products, setProducts] = useState(null);
-  const [isOwner, setOwner] = useState(true);
+  const [owner, setOwner] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { id } = router.query;
 
@@ -30,7 +30,12 @@ const User = () => {
       const data = id && (await fetchProducts(id));
       data && setProducts([...data]);
     };
+    const getStoreOwner = async () => {
+      const data = id && (await getOwner(id));
+      data && setOwner(data);
+    };
     fetchAllProducts();
+    getStoreOwner();
   }, [id]);
 
   const prod = [
@@ -68,9 +73,10 @@ const User = () => {
     <>
       <div className="store-container">
         <AddYourProduct setIsOpen={setIsOpen} />
-        {isOwner && isOpen && <CreateProduct storeId={id} close={setIsOpen} />}
-        {prod?.map((item) => (
-          <Product Itemkey={item.id} product={item} />
+
+        {owner && isOpen && <CreateProduct storeId={id} close={setIsOpen} />}
+        {products?.map((item) => (
+          <Product Itemkey={item.id} product={item} owner={owner} />
         ))}
       </div>
     </>

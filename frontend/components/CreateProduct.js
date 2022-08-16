@@ -19,10 +19,13 @@ const CreateProduct = ({ storeId, close }) => {
     const files = e.target.files;
     console.log(files);
     try {
-      // const hash = await uploadToIpfs(files[0]);
+      const hash = await uploadToIpfs(files[0]);
       if (true) {
         console.log("uploaded");
-        setFile({ filename: files[0].name, hash:  typeof hash !== "undefined" ? hash : "hash"  });
+        setFile({
+          filename: files[0].name,
+          hash: typeof hash !== "undefined" ? hash : "hash",
+        });
         setUploaded(true);
       }
     } catch (error) {
@@ -50,7 +53,7 @@ const CreateProduct = ({ storeId, close }) => {
       <div className={styles.create_product_container}>
         <div className={styles.create_product_cross}>
           <button onClick={() => close(false)} className={styles.close}>
-          &#x2715;
+            &#x2715;
           </button>
         </div>
         <div className={styles.create_product_form}>
@@ -64,10 +67,15 @@ const CreateProduct = ({ storeId, close }) => {
               accept=".zip,.rar,.7zip,.jpg,.png,.jpeg,.gif,.bmp,.svg,.webp"
               placeholder="Emojis"
               onChange={onChange}
-              className = {styles.getFile} id="getFile"
+              className={styles.getFile}
+              id="getFile"
             />
-            <button onClick={openFileDialog} className={styles.file_btn}>Add a File</button>
-            {file.filename != null && <div className={styles.file_name}>{file.filename}</div>}
+            <button onClick={openFileDialog} className={styles.file_btn}>
+              Add a File
+            </button>
+            {file.filename != null && (
+              <div className={styles.file_name}>{file.filename}</div>
+            )}
             <input
               className={styles.input}
               type="text"
@@ -85,14 +93,14 @@ const CreateProduct = ({ storeId, close }) => {
               }}
             />
 
-              <input
-                className={styles.input}
-                type="url"
-                placeholder="Image URL ex: https://i.imgur.com/rVD8bjt.png"
-                onChange={(e) => {
-                  setNewProduct({ ...newProduct, image_url: e.target.value });
-                }}
-              />
+            <input
+              className={styles.input}
+              type="url"
+              placeholder="Image URL ex: https://i.imgur.com/rVD8bjt.png"
+              onChange={(e) => {
+                setNewProduct({ ...newProduct, image_url: e.target.value });
+              }}
+            />
 
             <button
               className={styles.button}
