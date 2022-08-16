@@ -8,7 +8,7 @@ export default function Product({ product, itemKey }) {
     <div className="product-container" key={itemKey}>
       <div className="product-main">
         <div className="product-main-img">
-          <img style={{ height: "200px" }} src={image_url} alt={name} />
+          <img src={image_url} alt={name} />
         </div>
 
         <div className="product-main-content">

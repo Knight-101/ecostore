@@ -69,7 +69,7 @@ const User = () => {
       <div className="store-container">
         <AddYourProduct setIsOpen={setIsOpen} />
         {isOwner && isOpen && <CreateProduct storeId={id} close={setIsOpen} />}
-        {products?.map((item) => (
+        {prod?.map((item) => (
           <Product Itemkey={item.id} product={item} />
         ))}
       </div>

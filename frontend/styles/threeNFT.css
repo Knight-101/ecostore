@@ -47,7 +47,6 @@
 }
 
 .tree-page-wrap {
-  border: 2px solid red;
   position: absolute;
   width: 100%;
   background-color: #111111;
@@ -89,7 +88,6 @@
 
 .your-nft-panel {
   margin-top: 20px;
-  border: 1px solid red;
   opacity: 1;
   display: flex;
   align-items: center;

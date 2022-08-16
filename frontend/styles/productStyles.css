@@ -4,15 +4,21 @@
 }
 
 .product-main-img {
-  height: 250px;
+  height: 200px;
   border: 2px solid green;
+}
+
+.product-main-img > img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .store-container {
   border: 2px solid blue;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
   /* flex-wrap: wrap; */
 }
