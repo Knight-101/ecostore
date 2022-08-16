@@ -151,3 +151,10 @@
   font-size: 15px;
   font-weight: 100;
 }
+
+@media (max-width: 500px) {
+  .featured-store {
+    width: 300px;
+    height: 300px;
+  }
+}

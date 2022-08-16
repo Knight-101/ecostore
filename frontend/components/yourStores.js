@@ -7,9 +7,11 @@ const meta = "/assets/metaverse.jpg";
 
 export const AddYourStore = ({ setIsOpen }) => {
   return (
-    <div className="add-store-main" onClick={() => setIsOpen(true)}>
-      <span>&#43;</span>
-      Add Your Store
+    <div className="product-container">
+      <div className="add-store-main" onClick={() => setIsOpen(true)}>
+        <span>&#43;</span>
+        Add Your Store
+      </div>
     </div>
   );
 };
@@ -25,6 +27,14 @@ const YourStores = ({ type, searchParam, customRef }) => {
     };
     fetchStores();
   }, [walletAddress]);
+
+  const testStores = [
+    {
+      image: "",
+      name: "Metaverse",
+      description: "Metaverse",
+    },
+  ];
   return (
     <>
       {isOpen && <CreateStoreModal setIsOpen={setIsOpen} />}
@@ -37,12 +47,14 @@ const YourStores = ({ type, searchParam, customRef }) => {
       <div className="ys-main" ref={customRef}>
         {type !== "search" && <AddYourStore setIsOpen={setIsOpen} />}
         {myStores?.map((store, index) => (
-          <DisplayDiv
-            key={index}
-            image={store.image}
-            name={store.name}
-            description={store.description}
-          />
+          <div className="product-container">
+            <DisplayDiv
+              key={index}
+              image={store.image}
+              name={store.name}
+              description={store.description}
+            />
+          </div>
         ))}
       </div>
     </>

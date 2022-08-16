@@ -22,10 +22,9 @@
 }
 
 .ys-main {
-  display: flex;
-  padding: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
+  border: 2px solid blue;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 20px;
 }
 
@@ -33,7 +32,7 @@
   background-color: #0d8f8f15;
   height: 400px;
   width: 400px;
-  border: 3px dashed var(--color-primary);
+  border: 4px dashed var(--color-primary);
   border-radius: 20px;
   overflow: hidden;
   display: flex;
@@ -45,4 +44,11 @@
 
 .add-store-main > span {
   font-size: 100px;
+}
+
+@media (max-width: 500px) {
+  .add-store-main {
+    width: 300px;
+    height: 300px;
+  }
 }
