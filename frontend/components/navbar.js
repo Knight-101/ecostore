@@ -3,6 +3,7 @@ import Web3Context from "../contexts/Web3Context";
 import ThreeNFT from "./threeNFT";
 import useWindowDimensions from "../utils/getWindowDim";
 import metadata from "../metadata_uri.json";
+import DonateModal from "./donateModal";
 
 const SvgAnimation = () => {
   return (
@@ -174,6 +175,7 @@ const Navbar = () => {
   const [donated, setDonated] = useState(null);
   const [level, setLevel] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     const nftData = async () => {
@@ -195,6 +197,19 @@ const Navbar = () => {
     walletAddress && nftData();
   }, [walletAddress, donated]);
 
+  const openModal = () => {
+    setModal((val) => !val);
+  };
+  const closeModal = () => {
+    setModal(false);
+  };
+
+  const upgradeFunc = async () => {
+    const newUri = metadata[nextLevel.toString()];
+    const tx = await upgradeNFT(newUri);
+    setUpgrade(false);
+    setNextLevel(null);
+  };
   const donateFunc = async () => {
     const newDonation = await donate(8);
     setDonated(newDonation * 10 ** -6);
@@ -217,54 +232,59 @@ const Navbar = () => {
   // }, []);
 
   return (
-    <div className="nav-main">
-      <div className="nav-body">
-        {/* <img src={logo} alt="" /> */}
-        {s_w > 600 ? (
-          <SvgAnimation />
-        ) : (
-          <>
-            <img src="/assets/ecostore_small.svg" style={{ width: 60 }} />
-          </>
-        )}
-      </div>
-      <button type="button" onClick={donateFunc}>
-        Donate
-      </button>
-      {!walletAddress ? (
-        <div className="nav-nft-contain">
-          <button type="button" onClick={() => connectWallet()}>
-            Connect Wallet
-          </button>
-        </div>
-      ) : (
-        <div className="nav-nft-contain">
-          {!loading && minted ? (
-            <>
-              {/* <NFTProgress
-                level={level}
-                money={donated}
-                upgrade={upgrade}
-                upgradeFunc={upgradeFunc}
-              /> */}
-              <ThreeNFT type={level} />
-            </>
+    <>
+      <div className="nav-main">
+        <div className="nav-body">
+          {/* <img src={logo} alt="" /> */}
+          {s_w > 600 ? (
+            <SvgAnimation />
           ) : (
-            minted === false && (
-              <button
-                type="button"
-                onClick={async () => {
-                  const data = await mintCRB();
-                  console.log(data);
-                }}
-              >
-                MINT
-              </button>
-            )
+            <>
+              <img src="/assets/ecostore_small.svg" style={{ width: 60 }} />
+            </>
           )}
         </div>
-      )}
-    </div>
+        <div className="nav-right">
+          <button type="button" className="navbar-btn" onClick={openModal}>
+            Donate
+          </button>
+
+          {!walletAddress ? (
+            <div className="nav-nft-contain">
+              <button
+                type="button"
+                onClick={() => connectWallet()}
+                className="navbar-btn"
+              >
+                Connect Wallet
+              </button>
+            </div>
+          ) : (
+            <div className="nav-nft-contain">
+              {!loading && minted ? (
+                <>
+                  <ThreeNFT type={level} />
+                </>
+              ) : (
+                minted === false && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const data = await mintCRB();
+                      console.log(data);
+                    }}
+                  >
+                    MINT
+                  </button>
+                )
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {modal && <DonateModal ocf={donateFunc} closer={closeModal} />}
+    </>
   );
 };
 

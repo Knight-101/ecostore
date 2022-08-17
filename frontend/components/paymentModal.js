@@ -20,8 +20,8 @@ const PaymentModal = ({ setter, title }) => {
               {/* <div className="ts-text">Selected Token</div> */}
               <div className="token-switch">
                 <div
-                  className={`tok ${token && "selected-token"}`}
-                  onClick={() => setToken(true)}
+                  className={`tok tok-sol ${token && "selected-token"}`}
+                  onClick={() => setToken(false)}
                 >
                   <img src="/assets/sol.png" className="coin-img" />
                 </div>

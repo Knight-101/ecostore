@@ -20,11 +20,10 @@ export default function Product({ product, itemKey, owner }) {
 
           <div className="product-main-buy">
             <div>{price} USDC</div>
-
-            {walletAddress && walletAddress !== owner && (
-              <Buy itemID={id} price={price} filename={filename} hash={hash} />
-            )}
           </div>
+          {walletAddress && walletAddress !== owner && (
+            <Buy itemID={id} price={price} filename={filename} hash={hash} />
+          )}
         </div>
       </div>
     </div>
