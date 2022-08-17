@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-import React from "react";
-import Navbar, { NFTProgress } from "../components/navbar.js";
-=======
+
 import React, { useContext, useEffect } from "react";
-import { NFTProgress } from "../components/navbar.js";
->>>>>>> origin/main
+import Navbar, { NFTProgress } from "../components/navbar.js";
 import ThreeNFT from "../components/threeNFT.js";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -173,28 +169,8 @@ const TreePage = () => {
   };
 
   return (
-<<<<<<< HEAD
     <>
       <Navbar />
-      <div className="tree-page-main">
-        {infoDisplay && <InfoPanel setter={setInfoDisplay} />}
-        <div className="tree-page-head">
-          <div className="tree-page-header">Header here</div>
-          <div className="tree-page-header-text">
-            <span>
-              Supporting text here. Supporting text here. Supporting text here.
-            </span>
-            <button
-              className="tree-page-button"
-              onClick={() => setInfoDisplay((val) => !val)}
-            >
-              What is CRB?
-            </button>
-          </div>
-        </div>
-        <div className={`your-nft-panel ${infoDisplay && "nft-panel-hidden"}`}>
-          <ThreeNFT pageType="page" type={TypeNFT} />
-=======
     <div className="tree-page-main">
       {infoDisplay && <InfoPanel setter={setInfoDisplay} />}
       <div className="tree-page-head">
@@ -212,7 +188,6 @@ const TreePage = () => {
       {minted ? (
         <div className={`your-nft-panel ${infoDisplay && "nft-panel-hidden"}`}>
           <ThreeNFT pageType="page" type={level} />
->>>>>>> origin/main
           <div className="your-nft-panel-text">
             {/* <div className="tree-page-header">Header here</div>
           <div className="tree-page-header-text">
@@ -221,23 +196,6 @@ const TreePage = () => {
             </span>
           </div> */}
           </div>
-<<<<<<< HEAD
-          <NFTProgress />
-        </div>
-        <div className="tree-page-head">
-          <div className="tree-page-header">Donation History</div>
-          <div className="tree-page-header-text">
-            <span>
-              Supporting text here. Supporting text here. Supporting text here.
-            </span>
-          </div>
-        </div>
-        <div className="donation-history">
-          <OffsetHistory rows={rows} />
-        </div>
-      </div>
-    </>
-=======
           <NFTProgress
             level={level}
             money={donated}
@@ -261,7 +219,7 @@ const TreePage = () => {
         <OffsetHistory rows={donations} />
       </div>
     </div>
->>>>>>> origin/main
+    </>
   );
 };
 
