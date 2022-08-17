@@ -15,6 +15,7 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Web3Context from "../contexts/Web3Context";
+import Navbar from "../components/navbar";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -106,32 +107,36 @@ export default function CollapsibleTable() {
   }, [walletAddress]);
 
   return (
-    <div className="table-wrap">
-      {orders && (
-        <TableContainer component={Paper}>
-          <Table
-            aria-label="collapsible table"
-            sx={{ backgroundColor: "transparent" }}
-          >
-            <TableHead sx={{ backgroundColor: "transparent" }}>
-              <StyledTableRow>
-                <StyledTableCell
-                  align="center"
-                  colSpan={6}
-                  sx={{ backgroundColor: "transparent" }}
-                >
-                  Your Orders
-                </StyledTableCell>
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {orders?.map((row, idx) => (
-                <Row key={idx} row={row} />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </div>
+    <>
+      <Navbar />
+
+      <div className="table-wrap">
+        {orders && (
+          <TableContainer component={Paper}>
+            <Table
+              aria-label="collapsible table"
+              sx={{ backgroundColor: "transparent" }}
+            >
+              <TableHead sx={{ backgroundColor: "transparent" }}>
+                <StyledTableRow>
+                  <StyledTableCell
+                    align="center"
+                    colSpan={6}
+                    sx={{ backgroundColor: "transparent" }}
+                  >
+                    Your Orders
+                  </StyledTableCell>
+                </StyledTableRow>
+              </TableHead>
+              <TableBody>
+                {orders?.map((row, idx) => (
+                  <Row key={idx} row={row} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </div>
+    </>
   );
 }

@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css?family=Work+Sans:400,700,900");
+body {
+  font-family: "Work Sans" sans-serif;
+  background: #111;
+  text-align: center;
+}
+.button {
+  user-select: none;
+  /* display: inline-block; */
+  border: 0.2em solid;
+  position: relative;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 150px;
+  overflow: hidden;
+  opacity: 0.6;
+  color: var(--color-primary);
+  z-index: 1;
+}
+.button__text {
+  display: block;
+  /* padding: 1em 2em; */
+  padding: 15px 10px 15px 10px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+.button__text:before {
+  content: attr(title);
+}
+.button__text--bis {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateX(-1em);
+  opacity: 0;
+}
+.button__mask {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-primary);
+  transform: translateX(-100%) rotate(45deg);
+  transition: all 0.3s;
+  z-index: 0;
+}
+.button:hover {
+  opacity: 1;
+}
+.button:hover .button__text {
+  animation: fx-text 0.3s ease-out;
+}
+.button:hover .button__text--bis {
+  animation: fx-text-bis 0.3s ease-out;
+}
+.button:hover .button__mask {
+  animation: fx-mask 0.3s ease-out;
+}
+.button:active {
+  opacity: 1;
+  background: #0d8f8f25;
+  color: inherit;
+}
+@keyframes fx-mask {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+@keyframes fx-text {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(1em);
+    opacity: 0;
+  }
+}
+@keyframes fx-text-bis {
+  0% {
+    transform: translateX(-1em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

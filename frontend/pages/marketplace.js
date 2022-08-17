@@ -50,23 +50,26 @@ const Marketplace = () => {
   }, []);
 
   return (
-    <div>
-      <MarketplaceHead
-        param={searchParam}
-        setter={setSearchParam}
-        getter={handleSearch}
-        mpvalue={market}
-        mpsetter={setMarket}
-      />
-      {market ? mounted && <Featured stores={stores} /> : <YourStores />}
-      {isSearch && market && (
-        <YourStores
-          type={"search"}
-          searchParam={[passedParam]}
-          customRef={scrollRef}
+    <>
+      <Navbar />
+      <div>
+        <MarketplaceHead
+          param={searchParam}
+          setter={setSearchParam}
+          getter={handleSearch}
+          mpvalue={market}
+          mpsetter={setMarket}
         />
-      )}
-    </div>
+        {market ? mounted && <Featured stores={stores} /> : <YourStores />}
+        {isSearch && market && (
+          <YourStores
+            type={"search"}
+            searchParam={[passedParam]}
+            customRef={scrollRef}
+          />
+        )}
+      </div>{" "}
+    </>
   );
 };
 

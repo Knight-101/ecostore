@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import CreateProduct from "../../components/CreateProduct";
+import Navbar from "../../components/navbar";
 import Product from "../../components/Product";
 import { AddYourStore } from "../../components/yourStores";
 import Web3Context from "../../contexts/Web3Context";
@@ -66,6 +67,7 @@ const User = () => {
 
   return (
     <>
+      <Navbar />
       <div className="store-container">
         <AddYourProduct setIsOpen={setIsOpen} />
         {isOwner && isOpen && <CreateProduct storeId={id} close={setIsOpen} />}

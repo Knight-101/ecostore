@@ -8,6 +8,7 @@ import "../styles/threeNFT.css";
 import "../styles/createStore.css";
 import "../styles/orders.css";
 import "../styles/productStyles.css";
+import "../styles/customButton.css";
 import "../styles/paymentModal.css";
 import Navbar from "../components/navbar";
 import CreateProduct from "../components/CreateProduct";
@@ -19,7 +20,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <Web3Provider>
       <ToastContainer />
-      <Navbar />
+      {/* <Navbar /> */}
       {/* <PaymentModal /> */}
       <Component {...pageProps} />
       {/* <CreateProduct /> */}
