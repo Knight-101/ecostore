@@ -6,19 +6,20 @@ import Web3Context from "../contexts/Web3Context";
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
 const CreateProduct = ({ storeId, close }) => {
-  const { addProduct, uploadToIpfs } = useContext(Web3Context);
+  const { addProduct, uploadToIpfs, setProductAdded } = useContext(Web3Context);
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
     image_url: "",
   });
   const [file, setFile] = useState({});
-  const [uploaded, setUploaded] = useState(false);
+  const [uploaded, setUploaded] = useState(null);
 
   async function onChange(e) {
     const files = e.target.files;
     console.log(files);
     try {
+      setUploaded(false);
       const hash = await uploadToIpfs(files[0]);
       if (true) {
         console.log("uploaded");
@@ -39,6 +40,8 @@ const CreateProduct = ({ storeId, close }) => {
       const product = { ...newProduct, ...file };
       const data = await addProduct(product, storeId);
       data && console.log("Product added");
+      data && setProductAdded(data[data.length - 1]);
+      close(false);
     } catch (error) {
       console.log(error);
     }
@@ -101,16 +104,20 @@ const CreateProduct = ({ storeId, close }) => {
                 setNewProduct({ ...newProduct, image_url: e.target.value });
               }}
             />
-
-            <button
-              className={styles.button}
-              onClick={() => {
-                createProduct();
-              }}
-              disabled={!uploaded}
-            >
-              Create Product
-            </button>
+            {uploaded === false && <span>Uploading...</span>}
+            {uploaded === true && (
+              <button
+                // className={styles.button}
+                onClick={() => {
+                  createProduct();
+                }}
+                style={{ cursor: "pointer" }}
+                className="navbar-btn"
+                disabled={!uploaded}
+              >
+                Create Product
+              </button>
+            )}
           </div>
         </div>
       </div>

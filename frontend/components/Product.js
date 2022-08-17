@@ -22,7 +22,14 @@ export default function Product({ product, itemKey, owner }) {
             <div>{price} USDC</div>
           </div>
           {walletAddress && walletAddress !== owner && (
-            <Buy itemID={id} price={price} filename={filename} hash={hash} />
+            <Buy
+              image={image_url}
+              name={name}
+              itemID={id}
+              price={price}
+              filename={filename}
+              hash={hash}
+            />
           )}
         </div>
       </div>

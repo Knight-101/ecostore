@@ -58,7 +58,13 @@ const DonateModal = ({ setter, title, ocf, closer }) => {
             <div className="base-price total-price"></div>
 
             <div className="button-confirm">
-              <button className="payment-button" onClick={() => ocf(basePrice)}>
+              <button
+                className="payment-button"
+                onClick={async () => {
+                  ocf(basePrice);
+                  closer();
+                }}
+              >
                 <img src="/assets/wallet.png" style={{ height: 20 }} />
                 Pay using wallet
               </button>

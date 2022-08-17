@@ -148,6 +148,19 @@
   align-items: center;
   cursor: pointer;
 }
+.payment-button-disable {
+  all: unset;
+  border: 1px solid var(--color-primary);
+  border-radius: 10px;
+  font-size: 12px;
+  padding: 10px;
+  transition: 0.5s all;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  opacity:0.5
+}
 
 .payment-button:hover {
   background-color: #0d8f8f20;

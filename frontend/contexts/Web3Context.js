@@ -50,6 +50,8 @@ const usdcAddress = new PublicKey(
 
 export const Web3Provider = (props) => {
   const [walletAddress, setWalletAddress] = useState(null);
+  const [storeAdded, setStoreAdded] = useState(null);
+  const [productAdded, setProductAdded] = useState(null);
 
   const functionsToExport = {};
 
@@ -191,6 +193,38 @@ export const Web3Provider = (props) => {
     }
   };
 
+  functionsToExport.calculateOffset = async () => {
+    try {
+      const response = await axios.post(
+        "https://api.getchange.io/api/v1/climate/crypto_offset",
+
+        {
+          funds_collected: false,
+          count: 1,
+          currency: "sol",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          auth: {
+            username:
+              "pk_test_683b5b5afbbe903e8856557955324dc8a4b7d22045fa499c447e311e6d36421b",
+            password:
+              "sk_test_bb8535af95170e1bd1a857f625df1cdfbbb1f2f7bb04c747de1201e1ac8eb8d2",
+          },
+        }
+      );
+
+      const offset_amount = response.data.amount;
+
+      return offset_amount;
+    } catch (err) {
+      toast.error(err);
+      console.error(err);
+    }
+  };
+
   functionsToExport.createStore = async (name, description, image) => {
     if (!walletAddress) {
       toast.error("Wallet not connected!");
@@ -290,6 +324,7 @@ export const Web3Provider = (props) => {
   functionsToExport.buyProduct = async (order, offset) => {
     try {
       const { orderID, storeID, price, itemId } = order;
+
       if (!walletAddress) {
         toast.error("Wallet not connected");
         return;
@@ -338,6 +373,14 @@ export const Web3Provider = (props) => {
         usdcAddress,
         buyerPublicKey
       );
+      const account = await connection.getTokenAccountsByOwner(buyerPublicKey, {
+        mint: usdcAddress,
+      });
+      if (!account.value.length) {
+        toast.error("Seller token account not initialized");
+
+        return;
+      }
 
       const shopUsdcAddress = await getAssociatedTokenAddress(
         usdcAddress,
@@ -877,6 +920,10 @@ export const Web3Provider = (props) => {
     <Web3Context.Provider
       value={{
         walletAddress,
+        storeAdded,
+        setStoreAdded,
+        productAdded,
+        setProductAdded,
         ...functionsToExport,
       }}
     >

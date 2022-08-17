@@ -8,7 +8,7 @@ const IPFSDownload = ({ hash, filename }) => {
     <div>
       {file ? (
         <div className="download-component">
-          <a className="download-button" href="" download={file}>
+          <a className="download-button" href={file} download={filename}>
             Download
           </a>
         </div>

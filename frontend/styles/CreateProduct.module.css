@@ -1,5 +1,5 @@
 .background_blur {
-  border: 1px solid red;
+
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
 }
 
 .create_product_container {
-  border: 1px solid red;
+
   width: clamp(300px, 50vw, 500px);
   background-color: var(--bg-primary);
   border-radius: 20px;
@@ -54,7 +54,7 @@
   height: 40px;
 }
 .header {
-  border: 1px solid red;
+
   display: flex;
   justify-content: center;
   padding: 10px 5px 10px 5px;

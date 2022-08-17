@@ -19,7 +19,8 @@ export const AddYourProduct = ({ setIsOpen }) => {
 };
 
 const User = () => {
-  const { fetchProducts, getOwner, walletAddress } = useContext(Web3Context);
+  const { fetchProducts, getOwner, walletAddress, productAdded } =
+    useContext(Web3Context);
   const router = useRouter();
   const [products, setProducts] = useState(null);
   const [owner, setOwner] = useState(null);
@@ -37,7 +38,7 @@ const User = () => {
     };
     fetchAllProducts();
     getStoreOwner();
-  }, [id]);
+  }, [id, productAdded]);
 
   const prod = [
     {

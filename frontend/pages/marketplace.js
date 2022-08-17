@@ -10,7 +10,7 @@ import Navbar from "../components/navbar";
 import Web3Context from "../contexts/Web3Context";
 
 const Marketplace = () => {
-  const { fetchAllStores } = useContext(Web3Context);
+  const { fetchAllStores, storeAdded } = useContext(Web3Context);
   const [searchParam, setSearchParam] = useState("");
   const [stores, setStores] = useState(null);
   const [isSearch, setSearch] = useState(false);
@@ -42,7 +42,7 @@ const Marketplace = () => {
       stores && setStores([...stores]);
     };
     fetchStores();
-  }, [isSearch]);
+  }, [storeAdded]);
   useEffect(() => {
     if (isSearch) {
       scrollRef.current?.scrollIntoView({ behavior: "smooth" });

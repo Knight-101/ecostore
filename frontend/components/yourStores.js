@@ -17,7 +17,7 @@ export const AddYourStore = ({ setIsOpen }) => {
 };
 
 const YourStores = ({ type, searchParam, customRef }) => {
-  const { walletAddress, fetchMyStores } = useContext(Web3Context);
+  const { walletAddress, fetchMyStores, storeAdded } = useContext(Web3Context);
   const [isOpen, setIsOpen] = useState(false);
   const [myStores, setMyStores] = useState(null);
   useEffect(() => {
@@ -26,7 +26,7 @@ const YourStores = ({ type, searchParam, customRef }) => {
       stores && setMyStores([...stores]);
     };
     fetchStores();
-  }, [walletAddress]);
+  }, [walletAddress, storeAdded]);
 
   const testStores = [
     {

@@ -13,7 +13,7 @@ const STATUS = {
   Paid: "Paid",
 };
 
-export default function Buy({ itemID, price, filename, hash }) {
+export default function Buy({ itemID, price, image, name, filename, hash }) {
   const router = useRouter();
   const { id } = router.query;
   const { walletAddress, buyProduct, hasPurchased, buyProductQR, addOrder } =
@@ -22,6 +22,7 @@ export default function Buy({ itemID, price, filename, hash }) {
   const [loading, setLoading] = useState(false); // Loading state of all above
   const [status, setStatus] = useState(STATUS.Initial); // Tracking transaction status
   const [QR, setQR] = useState(null); // Tracking transaction status
+  const [isOpen, setIsOpen] = useState(false); // Tracking transaction status
 
   const order =
     id &&
@@ -51,6 +52,7 @@ export default function Buy({ itemID, price, filename, hash }) {
           `Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`
         );
         setStatus(STATUS.Submitted);
+        setIsOpen(false);
       }
     } catch (error) {
       console.error(error);
@@ -114,15 +116,24 @@ export default function Buy({ itemID, price, filename, hash }) {
 
   return (
     <div>
-      {/* <PaymentModal /> */}
+      {isOpen && (
+        <PaymentModal
+          image={image}
+          name={name}
+          price={price}
+          setIsOpen={setIsOpen}
+          buyFunc={processTransaction}
+        />
+      )}
       <div id="canvas"></div>
       {status === STATUS.Paid ? (
         <IPFSDownload filename={filename} hash={hash} />
       ) : (
         <button
+          style={{ margin: "auto", marginBottom: "10px" }}
           disabled={loading}
           className="buy-button"
-          onClick={processTransaction}
+          onClick={() => setIsOpen(true)}
         >
           Buy now 🠚
         </button>

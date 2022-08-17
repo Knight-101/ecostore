@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Web3Context from "../contexts/Web3Context";
 
 const CreateStoreModal = ({ setIsOpen }) => {
-  const { createStore } = useContext(Web3Context);
+  const { createStore, setStoreAdded } = useContext(Web3Context);
   const [nameCount, setNameCount] = useState(0);
   const [name, setName] = useState("");
   const [img, setImg] = useState("");
@@ -32,7 +32,9 @@ const CreateStoreModal = ({ setIsOpen }) => {
   };
 
   const handleSubmit = async () => {
-    await createStore(name, description, img);
+    const data = await createStore(name, description, img);
+    data && setStoreAdded(data[data.length - 1]);
+    setIsOpen(false);
   };
 
   return (
@@ -76,7 +78,7 @@ const CreateStoreModal = ({ setIsOpen }) => {
               {descriptionCount}&nbsp;/&nbsp;{descriptionWordLim}
             </div>
           </div>
-          <div className="input-wrap tac">
+          {/* <div className="input-wrap tac">
             Offset Your Emissions?
             <br />
             <div className="sd-switch">
@@ -93,7 +95,7 @@ const CreateStoreModal = ({ setIsOpen }) => {
                 ></div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="input-wrap">
             <button className="create-store-button" onClick={handleSubmit}>
               Create Store
