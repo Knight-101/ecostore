@@ -5,6 +5,7 @@ import IPFSDownload from "./IpfsDownload";
 import Web3Context from "../contexts/Web3Context";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import PaymentModal from "./paymentModal";
 
 const STATUS = {
   Initial: "Initial",
@@ -35,17 +36,22 @@ export default function Buy({ itemID, price, filename, hash }) {
     );
 
   // Fetch the transaction object from the server (done to avoid tampering)
-  const processTransaction = async () => {
+  const processTransaction = async (offset) => {
     setLoading(true);
     // Attempt to send the transaction to the network
     try {
-      const qrCode = await buyProductQR(order);
-      setQR(true);
-      qrCode.append(document.getElementById("canvas"));
-      // console.log(
-      //   `Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`
-      // );
-      setStatus(STATUS.Submitted);
+      // const qrCode = await buyProductQR(order);
+      const txHash = await buyProduct(order, offset);
+      // console.log(qrCode);
+      // await qrCode.append(document.getElementById("canvas"));
+      // setQR(true);
+      // setStatus(STATUS.Submitted);
+      if (txHash) {
+        console.log(
+          `Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`
+        );
+        setStatus(STATUS.Submitted);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -72,14 +78,12 @@ export default function Buy({ itemID, price, filename, hash }) {
           const signatureInfo = await findReference(connection, orderID, {
             finality: "confirmed",
           });
-          console.log("Finding tx reference", signatureInfo.signature);
           const orderConfirm = await addOrder(order, signatureInfo.signature);
           if (orderConfirm) {
             clearInterval(interval);
             setStatus(STATUS.Paid);
             setLoading(false);
             setQR(false);
-            toast.success("Thankyou for your purchase");
           }
         } catch (e) {
           if (e instanceof FindReferenceError) {
@@ -110,7 +114,8 @@ export default function Buy({ itemID, price, filename, hash }) {
 
   return (
     <div>
-      {QR && <div id="canvas"></div>}
+      {/* <PaymentModal /> */}
+      <div id="canvas"></div>
       {status === STATUS.Paid ? (
         <IPFSDownload filename={filename} hash={hash} />
       ) : (

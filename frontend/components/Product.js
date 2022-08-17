@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import Web3Context from "../contexts/Web3Context";
 import Buy from "./Buy";
 
-export default function Product({ product, itemKey }) {
+export default function Product({ product, itemKey, owner }) {
+  const { walletAddress } = useContext(Web3Context);
   const { id, name, price, image_url, filename, hash } = product;
 
   return (
@@ -18,9 +20,10 @@ export default function Product({ product, itemKey }) {
 
           <div className="product-main-buy">
             <div>{price} USDC</div>
-            {/* Replace the IPFS component with the Buy component! */}
           </div>
-          <Buy itemID={id} price={price} filename={filename} hash={hash} />
+          {walletAddress && walletAddress !== owner && (
+            <Buy itemID={id} price={price} filename={filename} hash={hash} />
+          )}
         </div>
       </div>
     </div>
