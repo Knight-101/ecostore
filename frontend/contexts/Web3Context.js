@@ -848,6 +848,16 @@ export const Web3Provider = (props) => {
       const provider = getProvider();
       const wallet = provider.wallet;
 
+      const buyerTokenBalance = await getUsdcBalance();
+
+      if (
+        parseFloat(buyerTokenBalance.value.amount) <
+        parseFloat(amount) * 10 ** buyerTokenBalance.value.decimals
+      ) {
+        toast.error("Insufficient token balance!!");
+        return;
+      }
+
       const program = new Program(idl, programID, provider);
 
       const [nftData] = await PublicKey.findProgramAddress(
