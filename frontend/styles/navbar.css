@@ -163,3 +163,25 @@ a {
 .inner-sec a {
   color: var(--color-primary);
 }
+
+.navbar-btn {
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100px;
+  border: 1px solid var(--color-primary);
+  padding: 5px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
+}

@@ -6,6 +6,7 @@
   height: 100%;
   background-color: #11111190;
   backdrop-filter: blur(10px);
+  z-index: 90;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,6 +16,7 @@
   padding: 20px 0 20px 0;
   border: 1px solid var(--color-primary);
   border-radius: 20px;
+  background-color: #111111;
   width: clamp(300px, 50vw, 500px);
 }
 
@@ -187,4 +189,26 @@
   font-weight: 400;
   letter-spacing: 1px;
   color: #ffffff;
+}
+.tok-sol {
+  position: relative;
+  filter: grayscale(1);
+}
+.tok-sol::after {
+  content: "Coming Soon";
+  position: absolute;
+  font-size: 10px;
+  top: 30px;
+}
+
+#sol-inp {
+  all: unset;
+  width: 60%;
+  height: 40px;
+  border: 1px solid #0d8f8f;
+  border-radius: 5px;
+  padding: 0 10px;
+  font-size: 15px;
+  color: #0d8f8f;
+  transition: 0.3s all;
 }
