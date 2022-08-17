@@ -47,27 +47,33 @@ const User = () => {
       name: "NFT 2",
       price: "2",
       description: "NFT",
-      image_url: "",
+      image_url:
+        "https://image.shutterstock.com/image-vector/online-vector-icon-260nw-623385665.jpg",
     },
     {
       id: id + 2,
       name: "NFT 3",
       price: "3",
       description: "NFT",
-      image_url: "",
+      image_url:
+        "https://image.shutterstock.com/image-vector/online-vector-icon-260nw-623385665.jpg",
     },
     {
       id: id + 3,
       name: "NFT 4",
       price: "4",
       description: "NFT",
-      image_url: "",
+      image_url:
+        "https://image.shutterstock.com/image-vector/online-vector-icon-260nw-623385665.jpg",
     },
   ];
 
   return (
     <>
       <Navbar />
+      <h1>Store {id}</h1>
+      <br />
+      <br />
       <div className="store-container">
         <AddYourProduct setIsOpen={setIsOpen} />
         {isOwner && isOpen && <CreateProduct storeId={id} close={setIsOpen} />}

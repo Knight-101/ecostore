@@ -1,5 +1,5 @@
 .product-main {
-  border: 2px solid red;
+  border: 2px solid var(--color-primary);
   width: 250px;
   border-radius: 20px;
   overflow: hidden;
@@ -8,7 +8,25 @@
 
 .product-main-img {
   height: 200px;
-  border: 2px solid green;
+}
+
+.product-main-content {
+  padding-top: 10px;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.product-main-blob {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.product-main-buy {
+  font-size: 13px;
+  color: #fff;
 }
 
 .product-main-img > img {
@@ -18,7 +36,6 @@
 }
 
 .store-container {
-  border: 2px solid blue;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
