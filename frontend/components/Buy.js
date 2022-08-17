@@ -98,7 +98,7 @@ export default function Buy({ itemID, price, filename, hash }) {
 
   if (!walletAddress) {
     return (
-      <div>
+      <div className="buy-div-ret">
         <p>You need to connect your wallet to make transactions</p>
       </div>
     );

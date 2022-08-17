@@ -19,8 +19,8 @@ export default function Product({ product, itemKey }) {
           <div className="product-main-buy">
             <div>{price} USDC</div>
             {/* Replace the IPFS component with the Buy component! */}
-            {/* <Buy itemID={id} price={price} filename={filename} hash={hash} /> */}
           </div>
+          <Buy itemID={id} price={price} filename={filename} hash={hash} />
         </div>
       </div>
     </div>
