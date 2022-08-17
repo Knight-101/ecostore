@@ -53,6 +53,7 @@ const YourStores = ({ type, searchParam, customRef }) => {
               image={store.image}
               name={store.name}
               description={store.description}
+              id={store.id}
             />
           </div>
         ))}

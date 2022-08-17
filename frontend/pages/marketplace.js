@@ -27,15 +27,15 @@ const Marketplace = () => {
     polyfill();
   }
 
-  const handleSearch = () => {
-    setSearch(false);
-    // set search data to data fetched from backend
-    setSearchData([1, 2, 3, 4, 5]);
-    setSearch(true);
-    setMarket(true);
-    setPassedParam(searchParam);
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // const handleSearch = () => {
+  //   setSearch(false);
+  //   // set search data to data fetched from backend
+  //   setSearchData([1, 2, 3, 4, 5]);
+  //   setSearch(true);
+  //   setMarket(true);
+  //   setPassedParam(searchParam);
+  //   scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  // };
   useEffect(() => {
     const fetchStores = async () => {
       const stores = await fetchAllStores();
@@ -56,18 +56,17 @@ const Marketplace = () => {
         <MarketplaceHead
           param={searchParam}
           setter={setSearchParam}
-          getter={handleSearch}
           mpvalue={market}
           mpsetter={setMarket}
         />
         {market ? mounted && <Featured stores={stores} /> : <YourStores />}
-        {isSearch && market && (
+        {/* {isSearch && market && (
           <YourStores
             type={"search"}
             searchParam={[passedParam]}
             customRef={scrollRef}
           />
-        )}
+        )} */}
       </div>{" "}
     </>
   );

@@ -45,7 +45,7 @@ const opts = {
 const Web3Context = createContext();
 
 const usdcAddress = new PublicKey(
-  "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr"
+  "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
 );
 
 export const Web3Provider = (props) => {
@@ -129,7 +129,7 @@ export const Web3Provider = (props) => {
   functionsToExport.fetchAllStores = async () => {
     let { data, error } = await supabase
       .from("stores")
-      .select("name, description, image")
+      .select("id,name, description, image")
       .order("id", { ascending: true });
 
     if (error) {
@@ -143,7 +143,7 @@ export const Web3Provider = (props) => {
   functionsToExport.fetchMyStores = async () => {
     let { data, error } = await supabase
       .from("stores")
-      .select("name, description, image")
+      .select("id,name, description, image")
       .eq("owner", walletAddress)
       .order("id", { ascending: true });
 
@@ -816,7 +816,7 @@ export const Web3Provider = (props) => {
       );
 
       const receiverPublicKey = new PublicKey(
-        "3hHz1XBsthyhKb5zvfAoCyUEizGrx6boTzqSGmGvhb1D"
+        "6WzFCFukTTbwVZnRpkRGtX1GWbpCfc9AVQVeSkgVG8cz"
       );
       const senderPublicKey = wallet.publicKey;
       const senderUsdcAddress = await getAssociatedTokenAddress(

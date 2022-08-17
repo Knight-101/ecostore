@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Link from "next/link";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -11,25 +12,27 @@ const store = "../assets/NFT.jpg";
 
 export const DisplayDiv = (props) => {
   return (
-    <div className="featured-store">
-      <div className="featured-store-image">
-        <img
-          src={props.image ? props.image : store}
-          alt=""
-          className="featured-img"
-        />
-        <div className="store-tags">
+    <Link href={`/store/${props.id}`}>
+      <div className="featured-store" style={{ cursor: "pointer" }}>
+        <div className="featured-store-image">
+          <img
+            src={props.image ? props.image : store}
+            alt=""
+            className="featured-img"
+          />
+          {/* <div className="store-tags">
           <div className="store-badge">Badge</div>
           <div className="store-badge">Badge</div>
           <div className="store-badge">Badge</div>
+        </div> */}
+        </div>
+        <div className="featured-store-data">
+          <div className="featured-store-name">{props.name}</div>
+          {/* <div className="store-merchant">By store owner</div> */}
+          <div className="store-description">{props.description}</div>
         </div>
       </div>
-      <div className="featured-store-data">
-        <div className="featured-store-name">{props.name}</div>
-        {/* <div className="store-merchant">By store owner</div> */}
-        <div className="store-description">{props.description}</div>
-      </div>
-    </div>
+    </Link>
   );
 };
 
@@ -71,6 +74,7 @@ const Featured = (props) => {
                 image={store.image}
                 name={store.name}
                 description={store.description}
+                id={store.id}
               />
             </SwiperSlide>
           ))}

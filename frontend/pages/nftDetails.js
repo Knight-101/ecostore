@@ -1,4 +1,3 @@
-
 import React, { useContext, useEffect } from "react";
 import Navbar, { NFTProgress } from "../components/navbar.js";
 import ThreeNFT from "../components/threeNFT.js";
@@ -76,8 +75,9 @@ const OffsetHistory = ({ rows }) => {
                   href={`https://explorer.solana.com/tx/${row?.hash}?cluster=devnet`}
                   target="_blank"
                   rel="noreferrer"
+                  style={{ color: "#0d8f8f" }}
                 >
-                  {"click"}
+                  View in explorer
                 </a>
               </StyledTableCell>
             </TableRow>
@@ -171,54 +171,56 @@ const TreePage = () => {
   return (
     <>
       <Navbar />
-    <div className="tree-page-main">
-      {infoDisplay && <InfoPanel setter={setInfoDisplay} />}
-      <div className="tree-page-head">
-        <div className="tree-page-header">Carbon NFT</div>
-        <div className="tree-page-header-text">
-          <span>1 Dollar, 1 Tree</span>
-          <button
-            className="tree-page-button"
-            onClick={() => setInfoDisplay((val) => !val)}
-          >
-            Info
-          </button>
+      <div className="tree-page-main">
+        {infoDisplay && <InfoPanel setter={setInfoDisplay} />}
+        <div className="tree-page-head">
+          <div className="tree-page-header">Carbon NFT</div>
+          <div className="tree-page-header-text">
+            <span>1 Dollar, 1 Tree</span>
+            <button
+              className="tree-page-button"
+              onClick={() => setInfoDisplay((val) => !val)}
+            >
+              Info
+            </button>
+          </div>
         </div>
-      </div>
-      {minted ? (
-        <div className={`your-nft-panel ${infoDisplay && "nft-panel-hidden"}`}>
-          <ThreeNFT pageType="page" type={level} />
-          <div className="your-nft-panel-text">
-            {/* <div className="tree-page-header">Header here</div>
+        {minted ? (
+          <div
+            className={`your-nft-panel ${infoDisplay && "nft-panel-hidden"}`}
+          >
+            <ThreeNFT pageType="page" type={level} />
+            <div className="your-nft-panel-text">
+              {/* <div className="tree-page-header">Header here</div>
           <div className="tree-page-header-text">
             <span>
               Supporting text here. Supporting text here. Supporting text here.
             </span>
           </div> */}
+            </div>
+            <NFTProgress
+              level={level}
+              money={donated}
+              upgrade={upgrade}
+              upgradeFunc={upgradeFunc}
+            />
           </div>
-          <NFTProgress
-            level={level}
-            money={donated}
-            upgrade={upgrade}
-            upgradeFunc={upgradeFunc}
-          />
-        </div>
-      ) : (
-        <div>Mint Carbon NFT!</div>
-      )}
+        ) : (
+          <div>Mint Carbon NFT!</div>
+        )}
 
-      <div className="tree-page-head">
-        <div className="tree-page-header">Donation History</div>
-        {/* <div className="tree-page-header-text">
+        <div className="tree-page-head">
+          <div className="tree-page-header">Donation History</div>
+          {/* <div className="tree-page-header-text">
           <span>
             Supporting text here. Supporting text here. Supporting text here.
           </span>
         </div> */}
+        </div>
+        <div className="donation-history">
+          <OffsetHistory rows={donations} />
+        </div>
       </div>
-      <div className="donation-history">
-        <OffsetHistory rows={donations} />
-      </div>
-    </div>
     </>
   );
 };

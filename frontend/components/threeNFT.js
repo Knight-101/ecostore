@@ -1,6 +1,7 @@
 import React, { Suspense, useRef } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
+import Link from "next/link";
 
 function ModelSeed(props) {
   const { nodes, materials } = useGLTF("/models/seed.glb");
@@ -442,27 +443,32 @@ const ThreeNFT = ({ type, pageType }) => {
   }
 
   return (
-    <div
-      className={
-        pageType === "component" ? "three-nft-canvas" : "three-nft-page-canvas"
-      }
-    >
-      <Canvas camera={{ fov: 35, position: [-500, 250, 0] }} width="200">
-        <Suspense fallback={null} />
-        {/* <ambientLight /> */}
-        <directionalLight intensity={1} position={[-600, 500, 500]} />
-        {type === 1 && <ModelSeed />}
-        {type === 2 && <ModelPlant />}
-        {type === 3 && <ModelSingleTree />}
-        {type === 4 && <ModelGroupTree />}
-        {type === 5 && <ModelForest />}
-        <OrbitControls
-          enablePan={false}
-          enableZoom={false}
-          enableRotate={false}
-        />
-      </Canvas>
-    </div>
+    <Link href={`/nftDetails`}>
+      <div
+        className={
+          pageType === "component"
+            ? "three-nft-canvas"
+            : "three-nft-page-canvas"
+        }
+        style={{ cursor: "pointer" }}
+      >
+        <Canvas camera={{ fov: 35, position: [-500, 250, 0] }} width="200">
+          <Suspense fallback={null} />
+          {/* <ambientLight /> */}
+          <directionalLight intensity={1} position={[-600, 500, 500]} />
+          {type === 1 && <ModelSeed />}
+          {type === 2 && <ModelPlant />}
+          {type === 3 && <ModelSingleTree />}
+          {type === 4 && <ModelGroupTree />}
+          {type === 5 && <ModelForest />}
+          <OrbitControls
+            enablePan={false}
+            enableZoom={false}
+            enableRotate={false}
+          />
+        </Canvas>
+      </div>
+    </Link>
   );
 };
 

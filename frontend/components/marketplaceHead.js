@@ -14,8 +14,10 @@ const MarketplaceHead = (props) => {
   const [left, setLeft] = useState(true);
   return (
     <>
-      <div className="mp-head-main">Marketplace</div>
-      <div className="sd-wrap">
+      <div className="mp-head-main" style={{ marginBottom: "2rem" }}>
+        Marketplace
+      </div>
+      {/* <div className="sd-wrap">
         <div className="marketplace-search">
           <input
             type="text"
@@ -29,7 +31,7 @@ const MarketplaceHead = (props) => {
             <img src={search} alt="" style={{ height: 25 }} />
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="sd-switch">
         <div className="switch-wrap">
           <div className="switch-select" onClick={() => props.mpsetter(true)}>

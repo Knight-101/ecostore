@@ -4,6 +4,7 @@ import ThreeNFT from "./threeNFT";
 import useWindowDimensions from "../utils/getWindowDim";
 import metadata from "../metadata_uri.json";
 import DonateModal from "./donateModal";
+import Link from "next/link";
 
 const SvgAnimation = () => {
   return (
@@ -121,6 +122,12 @@ const SvgAnimation = () => {
   );
 };
 
+function formatAddress(address) {
+  return (
+    address.substring(0, 6) + "..." + address.substring(address.length - 6)
+  );
+}
+
 export const NFTProgress = ({ level, money, upgrade, upgradeFunc }) => {
   if (!level) {
     level = 1;
@@ -157,7 +164,12 @@ export const NFTProgress = ({ level, money, upgrade, upgradeFunc }) => {
       </div>
       <div className="nft-prog-description">
         {upgrade ? (
-          <button type="button" onClick={() => upgradeFunc()}>
+          <button
+            type="button"
+            className="navbar-btn"
+            style={{ cursor: "pointer" }}
+            onClick={() => upgradeFunc()}
+          >
             Upgrade
           </button>
         ) : (
@@ -210,8 +222,8 @@ const Navbar = () => {
     setUpgrade(false);
     setNextLevel(null);
   };
-  const donateFunc = async () => {
-    const newDonation = await donate(8);
+  const donateFunc = async (amount) => {
+    const newDonation = await donate(amount);
     setDonated(newDonation * 10 ** -6);
   };
   var s_w = 1000;
@@ -234,18 +246,25 @@ const Navbar = () => {
   return (
     <>
       <div className="nav-main">
-        <div className="nav-body">
-          {/* <img src={logo} alt="" /> */}
-          {s_w > 600 ? (
-            <SvgAnimation />
-          ) : (
-            <>
-              <img src="/assets/ecostore_small.svg" style={{ width: 60 }} />
-            </>
-          )}
+        <div className="nav-body" style={{ cursor: "pointer" }}>
+          <Link href={`/`}>
+            {/* <img src={logo} alt="" /> */}
+            {s_w > 600 ? (
+              <SvgAnimation />
+            ) : (
+              <>
+                <img src="/assets/ecostore_small.svg" style={{ width: 60 }} />
+              </>
+            )}
+          </Link>
         </div>
         <div className="nav-right">
-          <button type="button" className="navbar-btn" onClick={openModal}>
+          <button
+            type="button"
+            style={{ cursor: "pointer" }}
+            className="navbar-btn"
+            onClick={openModal}
+          >
             Donate
           </button>
 
@@ -255,6 +274,7 @@ const Navbar = () => {
                 type="button"
                 onClick={() => connectWallet()}
                 className="navbar-btn"
+                style={{ cursor: "pointer" }}
               >
                 Connect Wallet
               </button>
@@ -263,26 +283,63 @@ const Navbar = () => {
             <div className="nav-nft-contain">
               {!loading && minted ? (
                 <>
+                  <div className="nav-right">
+                    <Link href={`/orders`}>
+                      <button
+                        type="button"
+                        style={{ cursor: "pointer" }}
+                        className="navbar-btn"
+                      >
+                        Orders
+                      </button>
+                    </Link>
+                  </div>
+
                   <ThreeNFT type={level} />
                 </>
               ) : (
                 minted === false && (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      const data = await mintCRB();
-                      console.log(data);
-                    }}
-                  >
-                    MINT
-                  </button>
+                  <>
+                    <div className="nav-right">
+                      <Link href={`/orders`}>
+                        <button
+                          type="button"
+                          style={{ cursor: "pointer" }}
+                          className="navbar-btn"
+                        >
+                          Orders
+                        </button>
+                      </Link>
+                    </div>
+                    <button
+                      type="button"
+                      className="navbar-btn"
+                      style={{ cursor: "pointer" }}
+                      onClick={async () => {
+                        const data = await mintCRB();
+                        console.log(data);
+                      }}
+                    >
+                      MINT
+                    </button>
+                  </>
                 )
               )}
             </div>
           )}
         </div>
       </div>
-
+      <p>
+        <span style={{ marginRight: "1rem" }}>USDC faucet -</span>
+        <a
+          href="https://usdcfaucet.com/"
+          style={{ color: "blue" }}
+          target="_blank"
+          rel="noreferrer"
+        >
+          https://usdcfaucet.com/
+        </a>
+      </p>
       {modal && <DonateModal ocf={donateFunc} closer={closeModal} />}
     </>
   );

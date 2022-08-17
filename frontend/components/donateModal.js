@@ -3,7 +3,7 @@ import React from "react";
 const DonateModal = ({ setter, title, ocf, closer }) => {
   const [token, setToken] = React.useState(false);
   const [checked, setChecked] = React.useState(false);
-  const [basePrice, setBase] = React.useState(30);
+  const [basePrice, setBase] = React.useState(5);
   const [offsetPrice, setOffset] = React.useState(10);
   const changeBase = (e) => {
     setBase(e.target.value);
@@ -13,6 +13,17 @@ const DonateModal = ({ setter, title, ocf, closer }) => {
     <div className="payment-wrap">
       <div className="payment-modal-main">
         <div className="payment-modal-header">Donate</div>
+        <p style={{ marginBottom: "1rem" }}>
+          All donations to{" "}
+          <a
+            href="https://getchange.io/donate/cause/6WzFCFukTTbwVZnRpkRGtX1GWbpCfc9AVQVeSkgVG8cz"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "blue", marginBottom: "2rem" }}
+          >
+            CarbonFund
+          </a>
+        </p>
         <div className="payment-modal-body">
           <div className="transaction-summary">
             <div className="ts-wrap">
@@ -47,14 +58,14 @@ const DonateModal = ({ setter, title, ocf, closer }) => {
             <div className="base-price total-price"></div>
 
             <div className="button-confirm">
-              <button className="payment-button" onClick={ocf}>
+              <button className="payment-button" onClick={() => ocf(basePrice)}>
                 <img src="/assets/wallet.png" style={{ height: 20 }} />
                 Pay using wallet
               </button>
-              <button className="payment-button" onClick={ocf}>
+              {/* <button className="payment-button" disable onClick={ocf}>
                 <img src="/assets/qr.png" style={{ height: 20 }} />
                 Scan QR Code
-              </button>
+              </button> */}
             </div>
             <br />
 
